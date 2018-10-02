@@ -22,17 +22,17 @@ import java.util.List;
  *
  * @author derickfelix
  */
-public class JsqlQueryBuilder {
+public class JSqlQueryBuilder {
 
     private final List<Table> tables;
     private String with;
     
-    public JsqlQueryBuilder()
+    public JSqlQueryBuilder()
     {
         this.tables = new ArrayList<>();
     }
     
-    public JsqlQueryBuilder select(String... fields)
+    public JSqlQueryBuilder select(String... fields)
     {
         Table table = new Table();
         table.fields = fields;
@@ -41,7 +41,7 @@ public class JsqlQueryBuilder {
         return this;
     }
 
-    public JsqlQueryBuilder from(String tableName)
+    public JSqlQueryBuilder from(String tableName)
     {
         Table table = tables.get(0);
         table.name = tableName;
@@ -49,7 +49,7 @@ public class JsqlQueryBuilder {
         return this;
     }
 
-    public JsqlQueryBuilder innerJoin(String tableName, String on, String... fields)
+    public JSqlQueryBuilder innerJoin(String tableName, String on, String... fields)
     {
         Table table = new Table();
         table.name = tableName;
@@ -60,7 +60,7 @@ public class JsqlQueryBuilder {
         return this;
     }
 
-    public JsqlQueryBuilder with(String with)
+    public JSqlQueryBuilder with(String with)
     {
         this.with = with;
 

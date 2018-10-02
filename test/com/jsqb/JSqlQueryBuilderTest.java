@@ -26,9 +26,9 @@ import static org.junit.Assert.*;
  *
  * @author derickfelix
  */
-public class JsqlQueryBuilderTest {
+public class JSqlQueryBuilderTest {
     
-    public JsqlQueryBuilderTest()
+    public JSqlQueryBuilderTest()
     {
     }
     
@@ -59,7 +59,7 @@ public class JsqlQueryBuilderTest {
     public void testSelectAll()
     {
         System.out.println("SELECT ALL");
-        JsqlQueryBuilder jsqb = new JsqlQueryBuilder();
+        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
         
         String exp = "SELECT users.* FROM users";
         String act = jsqb.select().from("users").write();
@@ -71,7 +71,7 @@ public class JsqlQueryBuilderTest {
     public void testSelect()
     {
         System.out.println("SELECT");
-        JsqlQueryBuilder jsqb = new JsqlQueryBuilder();
+        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
         
         String exp = "SELECT users.user_id, users.name, users.email FROM users";
         String act = jsqb.select("user_id", "name", "email").from("users").write();
@@ -84,7 +84,7 @@ public class JsqlQueryBuilderTest {
     {
         System.out.println("ALIASED SELECT");
         
-        JsqlQueryBuilder jsqb = new JsqlQueryBuilder();
+        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
 
         String exp = "SELECT users.user_id AS userId, users.name AS username, users.email AS email FROM users";
         String act = jsqb.select("user_id AS userId", "name AS username", "email AS email").from("users").write();
