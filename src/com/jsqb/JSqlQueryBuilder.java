@@ -19,32 +19,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author derickfelix
  */
 public class JSqlQueryBuilder {
 
     private final List<Table> tables;
     private String with;
-    
+
     public JSqlQueryBuilder()
     {
         this.tables = new ArrayList<>();
     }
-    
-    public JSqlQueryBuilder select(String... fields)
+
+    public JSqlQueryBuilder select(String tableName, String... fields)
     {
         Table table = new Table();
+        table.name = tableName;
         table.fields = fields;
         tables.add(table);
-
-        return this;
-    }
-
-    public JSqlQueryBuilder from(String tableName)
-    {
-        Table table = tables.get(0);
-        table.name = tableName;
 
         return this;
     }
@@ -69,54 +61,58 @@ public class JSqlQueryBuilder {
 
     public String write()
     {
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT ");
+        if (tables.get(0).name != null) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT ");
 
-        boolean all = true;
+            boolean all = true;
 
-        for (int i = 0; i < tables.size(); i++) {
-            Table table = tables.get(i);
-
-            if (table.fields.length != 0) {
-                all = false;
-                break;
-            }
-        }
-
-        if (all) {
-            Table from = tables.get(0);
-            sql.append(from.name).append(".* ");
-        } else {
             for (int i = 0; i < tables.size(); i++) {
                 Table table = tables.get(i);
 
-                if (tables.size() == i + 1) {
-                    fillWithFields(table, sql, true);
-                } else {
-                    fillWithFields(table, sql, false);
+                if (table.fields.length != 0) {
+                    all = false;
+                    break;
                 }
             }
-        }
 
-        for (int i = 0; i < tables.size(); i++) {
-            Table table = tables.get(i);
-
-            if (i == 0) {
-                sql.append("FROM ")
-                        .append(table.name);
+            if (all) {
+                Table from = tables.get(0);
+                sql.append(from.name).append(".* ");
             } else {
-                sql.append(" INNER JOIN ")
-                        .append(table.name)
-                        .append(" on ")
-                        .append(table.on);
+                for (int i = 0; i < tables.size(); i++) {
+                    Table table = tables.get(i);
+
+                    if (tables.size() == i + 1) {
+                        fillWithFields(table, sql, true);
+                    } else {
+                        fillWithFields(table, sql, false);
+                    }
+                }
             }
+
+            for (int i = 0; i < tables.size(); i++) {
+                Table table = tables.get(i);
+
+                if (i == 0) {
+                    sql.append("FROM ")
+                            .append(table.name);
+                } else {
+                    sql.append(" INNER JOIN ")
+                            .append(table.name)
+                            .append(" on ")
+                            .append(table.on);
+                }
+            }
+
+            if (with != null) {
+                sql.append(" WHERE ").append(with);
+            }
+
+            return sql.toString();
         }
 
-        if (with != null) {
-            sql.append(" WHERE ").append(with);
-        }
-
-        return sql.toString();
+        return "";
     }
 
     private void fillWithFields(Table table, StringBuilder sql, boolean last)

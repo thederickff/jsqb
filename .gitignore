@@ -20,6 +20,10 @@ local.properties
 .settings/
 .loadpath
 
+# Idea specific #
+.idea/
+*.iml
+
 # NetBeans specific #
 nbproject/private/
 build/
