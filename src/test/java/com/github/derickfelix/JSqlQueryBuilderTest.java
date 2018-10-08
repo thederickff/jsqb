@@ -127,4 +127,5 @@ public class JSqlQueryBuilderTest {
 
         assertEquals(exp, act);
     }
+    
 }
