@@ -6,6 +6,7 @@ Stop to lost time writing repeated SQL queries and let Java SQL Query Builder do
 <a name="index_block"></a>
 
 * [1. Installation](#block1)
+* [1.1. Installation with Maven](#block1.1)
 * [2. SELECT Statement](#block2)     
     * [2.1. Basic SELECT statement](#block2.1) 
     * [2.2. SELECT with Specific Fields statement](#block2.2)
@@ -17,7 +18,35 @@ Stop to lost time writing repeated SQL queries and let Java SQL Query Builder do
 
 <a name="block1"></a>
 ## 1. Installation [↑](#index_block)
-See [Releases](https://github.com/derickfelix/jsqb/releases) section to download the .jar file and add it to the path of your project.
+For default installation, see [Releases](https://github.com/derickfelix/jsqb/releases) section to download the .jar file and add it to the path of your project.
+<a name="block1.1"></a>
+### 1.1. Installation with Maven [↑](#index_block)
+To install with maven, you can use the [Jitpack](https://jitpack.io/) for that.
+
+Step 1. Add the JitPack repository to your build file
+```xml
+<repositories>
+    ...
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+Step 2. Add the dependency
+```xml
+<dependencies>
+    ...
+    <dependency>
+        <groupId>com.github.derickfelix</groupId>
+        <artifactId>jsqb</artifactId>
+        <version>LATEST</version>
+    </dependency>
+</dependencies>
+```
+If the project doesn't have any GitHub Releases you can use the short commit hash or 'master-SNAPSHOT' as the version. Check the [Jitpack](https://jitpack.io/) page for more details. 
+
+
 
 <a name="block2"></a>
 ## 2. SELECT Statement [↑](#index_block)
