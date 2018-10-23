@@ -21,18 +21,15 @@ import java.util.List;
 /**
  * @author derickfelix
  */
-public class JSqlQueryBuilder {
+public class Jsqb {
 
-    private final List<Table> tables;
+    private List<Table> tables;
     private String with;
 
-    public JSqlQueryBuilder()
+    public Jsqb select(String tableName, String... fields)
     {
         this.tables = new ArrayList<>();
-    }
-
-    public JSqlQueryBuilder select(String tableName, String... fields)
-    {
+        
         Table table = new Table();
         table.name = tableName;
         table.fields = fields;
@@ -41,7 +38,7 @@ public class JSqlQueryBuilder {
         return this;
     }
 
-    public JSqlQueryBuilder innerJoin(String tableName, String on, String... fields)
+    public Jsqb innerJoin(String tableName, String on, String... fields)
     {
         Table table = new Table();
         table.name = tableName;
@@ -52,7 +49,7 @@ public class JSqlQueryBuilder {
         return this;
     }
 
-    public JSqlQueryBuilder with(String with)
+    public Jsqb with(String with)
     {
         this.with = with;
 

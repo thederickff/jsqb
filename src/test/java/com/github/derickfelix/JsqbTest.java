@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2018 derickfelix.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.github.derickfelix;
 
@@ -17,9 +27,9 @@ import org.junit.Test;
  *
  * @author derickfelix
  */
-public class JSqlQueryBuilderTest {
+public class JsqbTest {
     
-    public JSqlQueryBuilderTest()
+    public JsqbTest()
     {
     }
     
@@ -50,7 +60,7 @@ public class JSqlQueryBuilderTest {
     public void testSelectAll()
     {
         System.out.println("SELECT ALL");
-        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
+        Jsqb jsqb = new Jsqb();
 
         String exp = "SELECT users.* FROM users";
         String act = jsqb.select("users").write();
@@ -62,7 +72,7 @@ public class JSqlQueryBuilderTest {
     public void testSelect()
     {
         System.out.println("SELECT");
-        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
+        Jsqb jsqb = new Jsqb();
 
         String exp = "SELECT users.user_id, users.name, users.email FROM users";
         String act = jsqb.select("users", "user_id", "name", "email").write();
@@ -75,7 +85,7 @@ public class JSqlQueryBuilderTest {
     {
         System.out.println("ALIASED SELECT");
 
-        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
+        Jsqb jsqb = new Jsqb();
 
         String exp = "SELECT users.user_id AS userId, users.name AS username, users.email AS email FROM users";
         String act = jsqb.select("users", "user_id AS userId", "name AS username", "email AS email").write();
@@ -87,7 +97,7 @@ public class JSqlQueryBuilderTest {
     public void testInnerJoin()
     {
         System.out.println("INNER JOIN");
-        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
+        Jsqb jsqb = new Jsqb();
 
         String exp = "SELECT users.user_id, users.name, users.email, roles.name FROM users INNER JOIN roles on roles.id = users.role_id";
         String act = jsqb.select("users", "user_id", "name", "email")
@@ -100,7 +110,7 @@ public class JSqlQueryBuilderTest {
     public void testMultipleInnerJoins()
     {
         System.out.println("MULTIPLE INNER JOINS");
-        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
+        Jsqb jsqb = new Jsqb();
 
         String exp = "SELECT "
                 + "table_a.a, table_a.b, table_a.c, "
@@ -118,6 +128,21 @@ public class JSqlQueryBuilderTest {
                 .write();
 
         check(exp, act);
+    }
+    
+    @Test
+    public void testMultipleUsesOfJsqb()
+    {
+        System.out.println("MULTIPLE USES OF JSQB");
+        Jsqb jsqb = new Jsqb();
+        
+        String sql = jsqb.select("users", "id", "name", "role").with("id = :id, and create_at > :date").write();
+        
+        System.out.println(sql);
+        
+        String sql2 = jsqb.select("users", "id", "name", "role").write();
+        
+        System.out.println(sql2);
     }
 
     private void check(String exp, String act)
