@@ -58,7 +58,7 @@ If the project doesn't have any GitHub Releases you can use the short commit has
 public class Usage {
     public static void main(String[] args)
     {
-        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
+        Jsqb jsqb = new Jsqb();
         String sql = jsqb.select("users").write();
     
         System.out.println(sql);
@@ -77,7 +77,7 @@ SELECT users.* FROM users
 public class Usage {
     public static void main(String[] args)
     {
-        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
+        Jsqb jsqb = new Jsqb();
         String sql = jsqb.select("users", "id", "name", "email").write();
     
         System.out.println(sql);
@@ -98,7 +98,7 @@ The same of the previous one but with more information.
 public class Usage {
     public static void main(String[] args)
     {
-        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
+        Jsqb jsqb = new Jsqb();
         String sql = jsqb.select("users", "id as userId", "name as username", "email as receiver").write();
     
         System.out.println(sql);
@@ -124,7 +124,7 @@ This method is described as:
 public class Usage {
     public static void main(String[] args)
     {
-        JSqlQueryBuilder jsqb = new JSqlQueryBuilder();
+        Jsqb jsqb = new Jsqb();
         String sql = jsqb.select("users", "id", "name", "email")
                              .innerJoin("roles", "roles.id = users.role_id", "name", "level")
                              .write();
