@@ -29,8 +29,11 @@ import org.junit.Test;
  */
 public class JsqbTest {
     
+    private final Jsqb jsqb;
+    
     public JsqbTest()
     {
+        this.jsqb = new Jsqb();
     }
     
     @BeforeClass
@@ -52,15 +55,11 @@ public class JsqbTest {
     public void tearDown()
     {
     }
-    
-    /**
-     * Test of select method, of class JsqlQueryBuilder.
-     */
+
     @Test
     public void testSelectAll()
     {
         System.out.println("SELECT ALL");
-        Jsqb jsqb = new Jsqb();
 
         String exp = "SELECT users.* FROM users";
         String act = jsqb.select("users").write();
@@ -72,8 +71,7 @@ public class JsqbTest {
     public void testSelect()
     {
         System.out.println("SELECT");
-        Jsqb jsqb = new Jsqb();
-
+        
         String exp = "SELECT users.user_id, users.name, users.email FROM users";
         String act = jsqb.select("users", "user_id", "name", "email").write();
 
@@ -85,8 +83,6 @@ public class JsqbTest {
     {
         System.out.println("ALIASED SELECT");
 
-        Jsqb jsqb = new Jsqb();
-
         String exp = "SELECT users.user_id AS userId, users.name AS username, users.email AS email FROM users";
         String act = jsqb.select("users", "user_id AS userId", "name AS username", "email AS email").write();
 
@@ -97,8 +93,7 @@ public class JsqbTest {
     public void testInnerJoin()
     {
         System.out.println("INNER JOIN");
-        Jsqb jsqb = new Jsqb();
-
+        
         String exp = "SELECT users.user_id, users.name, users.email, roles.name FROM users INNER JOIN roles on roles.id = users.role_id";
         String act = jsqb.select("users", "user_id", "name", "email")
                 .innerJoin("roles", "roles.id = users.role_id", "name").write();
@@ -110,8 +105,7 @@ public class JsqbTest {
     public void testMultipleInnerJoins()
     {
         System.out.println("MULTIPLE INNER JOINS");
-        Jsqb jsqb = new Jsqb();
-
+        
         String exp = "SELECT "
                 + "table_a.a, table_a.b, table_a.c, "
                 + "table_b.a, table_b.b, table_b.c, "
@@ -124,7 +118,7 @@ public class JsqbTest {
         String act = jsqb.select("table_a", "a", "b", "c")
                 .innerJoin("table_b", "table_b.a = table_a.b", "a", "b", "c")
                 .innerJoin("table_c", "table_c.a = table_a.c", "a", "b", "c")
-                .with("table_a.a > 10 AND table_b.b < 20 AND table_c.c > 15")
+                .where("table_a.a > 10 AND table_b.b < 20 AND table_c.c > 15")
                 .write();
 
         check(exp, act);
@@ -134,15 +128,25 @@ public class JsqbTest {
     public void testMultipleUsesOfJsqb()
     {
         System.out.println("MULTIPLE USES OF JSQB");
-        Jsqb jsqb = new Jsqb();
-        
-        String sql = jsqb.select("users", "id", "name", "role").with("id = :id, and create_at > :date").write();
+
+        String sql = jsqb.select("users", "id", "name", "role").where("id = :id, and create_at > :date").write();
         
         System.out.println(sql);
         
         String sql2 = jsqb.select("users", "id", "name", "role").write();
         
         System.out.println(sql2);
+    }
+    
+    @Test
+    public void testOrderBy()
+    {
+        System.out.println("TEST ORDER BY");
+        String exp = "SELECT holidays.* FROM holidays ORDER BY date_of_holiday DESC";
+        
+        String act = jsqb.select("holidays").orderBy("date_of_holiday", true).write();
+        
+        check(exp, act);
     }
 
     private void check(String exp, String act)

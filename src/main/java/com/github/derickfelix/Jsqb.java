@@ -24,7 +24,8 @@ import java.util.List;
 public class Jsqb {
 
     private List<Table> tables;
-    private String with;
+    private String where;
+    private String orderBy;
 
     public Jsqb select(String tableName, String... fields)
     {
@@ -49,10 +50,17 @@ public class Jsqb {
         return this;
     }
 
-    public Jsqb with(String with)
+    public Jsqb where(String where)
     {
-        this.with = with;
+        this.where = where;
 
+        return this;
+    }
+    
+    public Jsqb orderBy(String orderBy, boolean descending)
+    {
+        this.orderBy = descending ? orderBy + " DESC" : orderBy;
+        
         return this;
     }
 
@@ -102,8 +110,12 @@ public class Jsqb {
                 }
             }
 
-            if (with != null) {
-                sql.append(" WHERE ").append(with);
+            if (where != null) {
+                sql.append(" WHERE ").append(where);
+            }
+            
+            if (orderBy != null) {
+                sql.append(" ORDER BY ").append(orderBy);
             }
 
             return sql.toString();
