@@ -19,17 +19,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author derickfelix
+ * @author derickfelix    
  */
 public class Jsqb {
 
     private List<Table> tables;
     private String where;
     private String orderBy;
-
-    public Jsqb select(String tableName, String... fields)
+    
+    private void initialize()
     {
         this.tables = new ArrayList<>();
+        this.where = null;
+        this.orderBy = null;
+    }
+    
+    public Jsqb select(String tableName, String... fields)
+    {
+        initialize();
         
         Table table = new Table();
         table.name = tableName;
