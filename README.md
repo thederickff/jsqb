@@ -1,7 +1,7 @@
 SQL Query Builder
 =================
 
-Stop to lost time writing repeated SQL queries and let Java SQL Query Builder do the job for you. It's simple, fast and lightweight. **Works without establishing a connection to the database.** 
+Stop to lost time writing repeated SQL queries and let Java SQL Query Builder do the job for you. It's simple, fast and lightweight. **You don't need to make a connection with a database.** 
 
 <a name="index_block"></a>
 
