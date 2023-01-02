@@ -32,6 +32,7 @@ public class Jsqb {
   private List<String> fields;
   private HashMap<String, String> parameters;
   private String orderBy;
+  private String groupBy;
   private boolean firstWhere;
   private Pattern pattern = Pattern.compile("WHERE :([a-z0-9])+", Pattern.CASE_INSENSITIVE);
 
@@ -51,6 +52,7 @@ public class Jsqb {
     this.fields = new ArrayList<>();
     this.parameters = new HashMap<>();
     this.orderBy = null;
+    this.groupBy = null;
     this.firstWhere = true;
   }
 
@@ -123,6 +125,11 @@ public class Jsqb {
     return this;
   }
 
+  public Jsqb groupBy(String columns) {
+    this.groupBy = columns;
+    return this;
+  }
+
   public String write() {
     // if (tables.get(0).name != null)
     // return "Not valid sql";
@@ -149,6 +156,10 @@ public class Jsqb {
     }
 
     where.forEach(w -> sql.append(w));
+
+    if (groupBy != null) {
+      sql.append(" GROUP BY ").append(groupBy);
+    }
 
     if (orderBy != null) {
       sql.append(" ORDER BY ").append(orderBy);

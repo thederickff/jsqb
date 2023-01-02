@@ -67,7 +67,8 @@ public class JsqbTest {
         .where("table_a.a > :lowerValue AND table_b.b < 20 AND table_c.c > :upperValue",
             jsqb.createParameter("lowerValue", "12"),
             jsqb.createParameter("upperValue", "15"))
-        .orderBy("a.a", true);
+        .orderBy("a.a", true)
+        .groupBy("a.a");
 
     if (endDate != null) {
       jsqb.addSelect("a.startDate")
