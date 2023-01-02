@@ -50,7 +50,6 @@ public class Jsqb {
     this.where = new ArrayList<>();
     this.fields = new ArrayList<>();
     this.parameters = new HashMap<>();
-    this.where = null;
     this.orderBy = null;
     this.firstWhere = true;
   }
@@ -71,7 +70,7 @@ public class Jsqb {
     return this;
   }
 
-  public Jsqb join(JOIN join, String tableName, String on, String... fields) {
+  public Jsqb join(JOIN join, String tableName, String on) {
     Table table = new Table();
     table.join = join.joinOpt;
     table.name = tableName;
@@ -81,27 +80,28 @@ public class Jsqb {
     return this;
   }
 
-  public Jsqb where(String where, String... parameters) {
+  public Jsqb where(String where, Parameter... parameters) {
     if (!this.firstWhere) {
       List<String> parameterToRemove = getParametersFromWhere();
       filterParameter(parameterToRemove);
     }
 
     firstWhere = false;
-    where.concat(where);
+    this.where.add(where);
 
     return this;
   }
 
-  public Jsqb andWhere(String where, String... parameters) {
+  public Jsqb andWhere(String where, Parameter... parameters) {
     where = this.firstWhere ? where : "AND" + where;
     where.concat(where);
     firstWhere = false;
     return this;
   }
 
-  public void addParam(String column, String value) {
+  public Parameter createParameter(String column, String value) {
     this.parameters.put(column, value);
+    return new Parameter();
   }
 
   public List<String> getParametersFromWhere() {
@@ -124,8 +124,8 @@ public class Jsqb {
   }
 
   public String write() {
-    if (tables.get(0).name != null)
-      return "Not valid sql";
+    // if (tables.get(0).name != null)
+    // return "Not valid sql";
 
     StringBuilder sql = new StringBuilder();
     sql.append("SELECT ");
@@ -133,9 +133,9 @@ public class Jsqb {
     boolean all = fields.size() > 1;
 
     if (all) {
-      sql.append("* ");
-    } else {
       fillWithFields(sql, true);
+    } else {
+      sql.append("* ");
     }
 
     sql.append("FROM ").append(tables.get(0).name);
@@ -165,13 +165,16 @@ public class Jsqb {
       sql.append(field).append(", ");
     }
 
-    sql.append(fields.get(lastElement)).append(" ");
+    if (lastElement > 0)
+      sql.append(fields.get(lastElement)).append(" ");
+  }
+
+  public class Parameter {
   }
 
   private class Table {
     private String name;
     private String on;
     private String join;
-
   }
 }
