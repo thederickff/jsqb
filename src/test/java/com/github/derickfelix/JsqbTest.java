@@ -58,9 +58,10 @@ public class JsqbTest {
 
     String endDate = "12/12/2021";
     String startDate = null;
+    String gaId = "1223424";
 
     jsqb
-        .select("table_a as a", "a.a", "a.b", "a.c", "b.a", "c.a")
+        .select("table_a as a", "COUNT(a.a) as cRows", "a.b", "a.c", "b.a", "c.a")
         .join(JOIN.LEFT, "table_b as b", "table_b.a = table_a.b")
         .join(JOIN.INNER, "table_c as c", "table_c.a = table_a.c")
         .join(JOIN.RIGHT, "table_d as d", "table_d.a = table_c.a")
@@ -70,14 +71,19 @@ public class JsqbTest {
         .orderBy("a.a", true)
         .groupBy("a.a");
 
-    if (endDate != null) {
+    if (endDate != null)
       jsqb.addSelect("a.startDate")
-          .andWhere("a.endDate = :endDate", jsqb.createParameter("endDate", endDate));
+          .andWhere("a.endDate = :endDate", jsqb.createParameter("endDate", endDate, true));
 
-    }
+    if (gaId != null)
+      jsqb.join(JOIN.INNER, "group_account as ga", "ga.id = a.group_account_id")
+          .andWhere("ga.id = :gaId", jsqb.createParameter("gaId", gaId));
+
     if (startDate != null)
-      jsqb.andWhere("a.startDate= :startDate", jsqb.createParameter("startDate", startDate));
+      jsqb.andWhere("a.startDate= :startDate", jsqb.createParameter("startDate", startDate, true));
 
+    jsqb.having("cRows > 1");
+    jsqb.andHaving("cRows < 10");
     String act = jsqb.write();
     System.out.println(act);
 
