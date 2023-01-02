@@ -144,7 +144,7 @@ public class Jsqb {
       Table table = tables.get(i);
       sql.append(table.join)
           .append(table.name)
-          .append(" on ")
+          .append(" ON ")
           .append(table.on);
     }
 
