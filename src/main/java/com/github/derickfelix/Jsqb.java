@@ -37,7 +37,8 @@ public class Jsqb {
   private String groupBy;
   private boolean firstWhere;
   private boolean firstHaving;
-  private Pattern pattern = Pattern.compile("WHERE :([a-z0-9])+", Pattern.CASE_INSENSITIVE);
+  private String p = "(:[a-zA-Z0-9]+)";
+  private Pattern pattern = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
 
   public static enum JOIN {
     INNER(" INNER JOIN "), LEFT(" LEFT JOIN "), RIGHT(" RIGHT JOIN ");
@@ -95,6 +96,8 @@ public class Jsqb {
     }
     firstWhere = false;
     this.where.add(" WHERE " + where);
+    for (Parameter p : parameters)
+      this.parametersWhere.put(p.column, p.value);
     return this;
   }
 
@@ -102,6 +105,8 @@ public class Jsqb {
     where = this.firstWhere ? where : " AND " + where;
     firstWhere = false;
     this.where.add(where);
+    for (Parameter p : parameters)
+      this.parametersWhere.put(p.column, p.value);
     return this;
   }
 
@@ -112,6 +117,8 @@ public class Jsqb {
     }
     firstHaving = false;
     this.having.add(" HAVING " + having);
+    for (Parameter p : parameters)
+      this.parametersHaving.put(p.column, p.value);
     return this;
   }
 
@@ -119,6 +126,8 @@ public class Jsqb {
     having = this.firstHaving ? having : " AND " + having;
     firstHaving = false;
     this.having.add(having);
+    for (Parameter p : parameters)
+      this.parametersHaving.put(p.column, p.value);
     return this;
   }
 
@@ -129,8 +138,7 @@ public class Jsqb {
   }
 
   public Parameter createParameter(String column, String value) {
-    this.parametersWhere.put(column, value);
-    return new Parameter();
+    return new Parameter(":" + column, value);
   }
 
   public List<String> getParameters(List<String> list) {
@@ -192,7 +200,8 @@ public class Jsqb {
     if (this.orderBy != null)
       sql.append(" ORDER BY ").append(this.orderBy);
 
-    return sql.toString();
+    return sql.toString()
+        .replaceAll(p, "?");
   }
 
   private void fillWithFields(StringBuilder sql) {
@@ -208,6 +217,12 @@ public class Jsqb {
   }
 
   public class Parameter {
+    String column, value;
+
+    Parameter(String column, String value) {
+      this.column = column;
+      this.value = value;
+    }
   }
 
   private class Table {
