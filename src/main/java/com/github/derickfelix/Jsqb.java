@@ -216,6 +216,12 @@ public class Jsqb {
       sql.append(fields.get(lastElement)).append(" ");
   }
 
+  public List<String> getParameters() {
+    ArrayList<String> parameters = new ArrayList<String>(this.parametersWhere.values());
+    parameters.addAll(this.parametersHaving.values());
+    return parameters;
+  }
+
   public class Parameter {
     String column, value;
 

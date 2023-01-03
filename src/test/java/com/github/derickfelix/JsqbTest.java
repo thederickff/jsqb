@@ -86,6 +86,7 @@ public class JsqbTest {
     jsqb.andHaving("cRows < 10");
     String act = jsqb.write();
     System.out.println(act);
+    System.out.println(jsqb.getParameters());
 
   }
 
