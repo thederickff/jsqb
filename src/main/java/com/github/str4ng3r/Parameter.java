@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  */
 public final class Parameter {
   public static String p = "(:[a-zA-Z0-9]+)";
-  public static Pattern pattern = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
+  public static Pattern pattern = Pattern.compile(p);
   private HashMap<String, String> parameters = new HashMap<>();
 
   public Parameter addParameter(String column, String value) {

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.derickfelix;
+package com.github.str4ng3r;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.derickfelix.Join.JOIN;
+import com.github.str4ng3r.Join.JOIN;
 
 /**
  *
@@ -64,7 +64,7 @@ public class SelectorTest {
     String gaId = "1223424";
     jsqb
         .select("table_a as a", "COUNT(a.a) as cRows", "a.b", "a.c", "b.a", "c.a",
-            "IF (:endDate > '12/10/2022', 'HOla', 'fdadfs') ")
+            "IF (:endDate > '12/10/2022', 'HOla', 'fdadfs')", ":gaId")
         .join(JOIN.LEFT, "table_b as b", "table_b.a = table_a.b")
         .join(JOIN.INNER, "table_c as c", "table_c.a = table_a.c")
         .join(JOIN.RIGHT, "table_d as d", "table_d.a = table_c.a")

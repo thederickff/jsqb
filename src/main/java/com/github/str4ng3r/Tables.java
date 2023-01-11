@@ -65,11 +65,9 @@ class Tables {
     if (getTables().size() == 0)
       return sql.append("Not valid sql");
 
-    sql.append("SELECT");
+    sql.append("SELECT ");
 
-    boolean all = fields.size() > 1;
-
-    if (all) {
+    if (fields.size() > 1) {
       fillWithFields(sql);
     } else {
       sql.append(" * ");

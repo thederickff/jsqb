@@ -45,6 +45,7 @@ final class WhereHaving {
       parameter.filterParameter(parameterToRemove);
       this.firstCriteria = true;
     }
+    this.firstCriteria = false;
     this.listFilterCriteria.add(criteria);
   }
 
