@@ -1,3 +1,21 @@
+/*
+ * The GPLv3 License (GPLv3)
+ * 
+ * Copyright (c) 2023 Pablo Eduardo Martinez Solis
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.github.derickfelix;
 
 import java.util.ArrayList;
@@ -6,6 +24,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ *
+ * @author Pablo Eduardo Martinez Solis
+ */
 public final class Parameter {
   public static String p = "(:[a-zA-Z0-9]+)";
   public static Pattern pattern = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
@@ -31,11 +53,11 @@ public final class Parameter {
     return indexes;
   }
 
-  public String replaceParamatersOnSql(String sql) {
+  String replaceParamatersOnSql(String sql) {
     return sql.replaceAll(p, "?");
   }
 
-  public List<String> sortParameters(List<String> indexes) {
+  List<String> sortParameters(List<String> indexes) {
     List<String> sortedParameters = new ArrayList<>();
 
     indexes.stream().forEach(p -> {
@@ -46,7 +68,7 @@ public final class Parameter {
     return sortedParameters;
   }
 
-  public void filterParameter(List<String> parameterToRemove) {
+  void filterParameter(List<String> parameterToRemove) {
     parameterToRemove.parallelStream().forEach(p -> parameters.remove(p));
   }
 
