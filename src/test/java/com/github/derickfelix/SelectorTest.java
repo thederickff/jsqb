@@ -56,10 +56,10 @@ public class SelectorTest {
   public void testMultipleInnerJoins() {
     System.out.println("MULTIPLE INNER JOINS");
 
+    Parameter p = new Parameter();
     String endDate = "12/12/2021";
     String startDate = null;
     String gaId = "1223424";
-
     jsqb
         .select("table_a as a", "COUNT(a.a) as cRows", "a.b", "a.c", "b.a", "c.a",
             "IF (:endDate > '12/10/2022', 'HOla', 'fdadfs') ")

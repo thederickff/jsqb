@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public final class Parameter {
   public static String p = "(:[a-zA-Z0-9]+)";
   public static Pattern pattern = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
-  public HashMap<String, String> parameters = new HashMap<>();
+  private HashMap<String, String> parameters = new HashMap<>();
 
   public Parameter addParameter(String column, String value) {
     this.parameters.put(":" + column, value);

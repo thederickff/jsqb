@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-public final class WhereHaving {
+final class WhereHaving {
 
   private List<String> listFilterCriteria = new ArrayList<>();
   private boolean firstCriteria;

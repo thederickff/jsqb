@@ -1,6 +1,6 @@
 package com.github.derickfelix;
 
-public class OrderGroupBy {
+class OrderGroupBy {
   String orderBy;
 
   public void orderBy(String orderBy, boolean descending) {

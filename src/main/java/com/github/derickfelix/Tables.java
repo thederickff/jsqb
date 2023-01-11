@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Tables {
+class Tables {
   private List<String> fields;
   private List<Table> tables;
 

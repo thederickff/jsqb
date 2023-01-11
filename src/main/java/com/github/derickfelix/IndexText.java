@@ -1,6 +1,6 @@
 package com.github.derickfelix;
 
-public final class IndexText {
+final class IndexText {
   int start, end;
 
   IndexText(int start, int end) {
