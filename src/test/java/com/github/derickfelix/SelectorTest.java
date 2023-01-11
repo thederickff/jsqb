@@ -22,18 +22,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.derickfelix.Jsqb.JOIN;
+import com.github.derickfelix.Tables.JOIN;
 
 /**
  *
  * @author derickfelix
  */
-public class JsqbTest {
+public class SelectorTest {
 
-  private final Jsqb jsqb;
+  private final Selector jsqb;
 
-  public JsqbTest() {
-    this.jsqb = new Jsqb();
+  public SelectorTest() {
+    this.jsqb = new Selector();
   }
 
   @BeforeClass
@@ -66,27 +66,27 @@ public class JsqbTest {
         .join(JOIN.INNER, "table_c as c", "table_c.a = table_a.c")
         .join(JOIN.RIGHT, "table_d as d", "table_d.a = table_c.a")
         .where("table_a.a > :lowerValue AND table_b.b < 20 AND table_c.c > :upperValue",
-            jsqb.createParameter("lowerValue", "12"),
-            jsqb.createParameter("upperValue", "15"))
+            new Parameter("lowerValue", "12"),
+            new Parameter("upperValue", "15"))
         .orderBy("a.a", true)
         .groupBy("a.a");
 
     if (endDate != null)
       jsqb.addSelect("a.startDate")
-          .andWhere("a.endDate = :endDate", jsqb.createParameter("endDate", endDate, true));
+          .andWhere("a.endDate = :endDate", new Parameter("endDate", endDate, true));
 
     if (gaId != null)
       jsqb.join(JOIN.INNER, "group_account as ga", "ga.id = a.group_account_id")
-          .andWhere("ga.id = :gaId", jsqb.createParameter("gaId", gaId));
+          .andWhere("ga.id = :gaId", new Parameter("gaId", gaId));
 
     if (startDate != null)
-      jsqb.andWhere("a.startDate= :startDate", jsqb.createParameter("startDate", startDate, true));
+      jsqb.andWhere("a.startDate= :startDate", new Parameter("startDate", startDate, true));
 
     jsqb.having("cRows > 1");
     jsqb.andHaving("cRows < 10");
-    String act = jsqb.write();
-    System.out.println(act);
-    System.out.println(jsqb.getParameters());
+
+    SqlParameter act = jsqb.getSqlAndParameters();
+    System.out.println(act.sql);
 
   }
 
