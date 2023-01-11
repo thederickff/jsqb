@@ -16,38 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.github.derickfelix;
-
-import java.util.List;
+package com.github.str4ng3r;
 
 /**
  *
  * @author Pablo Eduardo Martinez Solis
  */
-abstract class QueryBuilder {
-  protected Constants constants = new Constants();
-  protected Parameter parameter = new Parameter();
+public class Join {
+  public static enum JOIN {
+    INNER(" INNER JOIN "), LEFT(" LEFT JOIN "), RIGHT(" RIGHT JOIN ");
 
-  QueryBuilder() {
-  }
+    public String joinOpt;
 
-  public Parameter addParameter(String column, String value) {
-    return this.parameter.addParameter(column, value);
-  }
-
-  public Parameter addParameter(String column, String value, boolean b) {
-    return this.parameter.addParameter(column, value, b);
-  }
-
-  abstract protected String write();
-
-  public SqlParameter getSqlAndParameters() {
-    String sql = this.write();
-
-    List<String> orderParameters = parameter.sortParameters(parameter.getIndexesOfOcurrences(sql));
-    sql = parameter.replaceParamatersOnSql(sql);
-
-    return new SqlParameter(sql, orderParameters);
+    private JOIN(String joinOpt) {
+      this.joinOpt = joinOpt;
+    }
   }
 }

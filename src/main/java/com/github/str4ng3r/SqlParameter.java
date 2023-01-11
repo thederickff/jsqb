@@ -16,20 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.derickfelix;
+package com.github.str4ng3r;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Pablo Eduardo Martinez Solis
  */
-public class Join {
-  public static enum JOIN {
-    INNER(" INNER JOIN "), LEFT(" LEFT JOIN "), RIGHT(" RIGHT JOIN ");
+public class SqlParameter {
+  public String sql;
+  public List<String> paramaters = new ArrayList<>();
 
-    public String joinOpt;
-
-    private JOIN(String joinOpt) {
-      this.joinOpt = joinOpt;
-    }
+  SqlParameter(String sql, List<String> paramaters) {
+    this.sql = sql;
+    this.paramaters = paramaters;
   }
 }

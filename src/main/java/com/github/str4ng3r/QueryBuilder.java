@@ -16,21 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.derickfelix;
 
-import java.util.ArrayList;
+package com.github.str4ng3r;
+
 import java.util.List;
 
 /**
  *
  * @author Pablo Eduardo Martinez Solis
  */
-public class SqlParameter {
-  public String sql;
-  public List<String> paramaters = new ArrayList<>();
+abstract class QueryBuilder {
+  protected Constants constants = new Constants();
+  protected Parameter parameter = new Parameter();
 
-  SqlParameter(String sql, List<String> paramaters) {
-    this.sql = sql;
-    this.paramaters = paramaters;
+  QueryBuilder() {
+  }
+
+  public Parameter addParameter(String column, String value) {
+    return this.parameter.addParameter(column, value);
+  }
+
+  public Parameter addParameter(String column, String value, boolean b) {
+    return this.parameter.addParameter(column, value, b);
+  }
+
+  abstract protected String write();
+
+  public SqlParameter getSqlAndParameters() {
+    String sql = this.write();
+
+    List<String> orderParameters = parameter.sortParameters(parameter.getIndexesOfOcurrences(sql));
+    sql = parameter.replaceParamatersOnSql(sql);
+
+    return new SqlParameter(sql, orderParameters);
   }
 }

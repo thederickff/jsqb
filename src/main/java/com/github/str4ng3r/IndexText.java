@@ -1,3 +1,5 @@
+package com.github.str4ng3r;
+
 /*
  * The GPLv3 License (GPLv3)
  * 
@@ -16,24 +18,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.derickfelix;
+final class IndexText {
+  int start, end;
 
-/**
- *
- * @author Pablo Eduardo Martinez Solis
- */
-class OrderGroupBy {
-  String orderBy;
-
-  public void orderBy(String orderBy, boolean descending) {
-    this.orderBy = descending ? orderBy + " DESC" : orderBy;
-  }
-
-  public void groupBy(String groupBy) {
-    this.orderBy = groupBy;
-  }
-
-  public String write() {
-    return orderBy;
-  }
+  IndexText(int start, int end) {
+    this.start = start;
+    this.end = end;
+  };
 }
