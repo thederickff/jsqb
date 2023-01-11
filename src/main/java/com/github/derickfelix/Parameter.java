@@ -40,7 +40,7 @@ public final class Parameter {
 
     indexes.stream().forEach(p -> {
       if (this.parameters.containsKey(p))
-        sortedParameters.add(p);
+        sortedParameters.add(this.parameters.get(p));
     });
 
     return sortedParameters;

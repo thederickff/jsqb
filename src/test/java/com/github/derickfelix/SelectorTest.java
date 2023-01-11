@@ -61,7 +61,8 @@ public class SelectorTest {
     String gaId = "1223424";
 
     jsqb
-        .select("table_a as a", "COUNT(a.a) as cRows", "a.b", "a.c", "b.a", "c.a")
+        .select("table_a as a", "COUNT(a.a) as cRows", "a.b", "a.c", "b.a", "c.a",
+            "IF (:endDate > '12/10/2022', 'HOla', 'fdadfs') ")
         .join(JOIN.LEFT, "table_b as b", "table_b.a = table_a.b")
         .join(JOIN.INNER, "table_c as c", "table_c.a = table_a.c")
         .join(JOIN.RIGHT, "table_d as d", "table_d.a = table_c.a")
@@ -87,6 +88,7 @@ public class SelectorTest {
 
     SqlParameter act = jsqb.getSqlAndParameters();
     System.out.println(act.sql);
+    System.out.println(act.paramaters);
 
   }
 
@@ -97,6 +99,7 @@ public class SelectorTest {
 
     SqlParameter act = jsqb.select("holidays").orderBy("date_of_holiday", true).getSqlAndParameters();
     System.out.println(act.sql);
+    System.out.println(act.paramaters);
 
     // check(exp, act);
   }
