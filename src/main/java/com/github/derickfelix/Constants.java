@@ -27,7 +27,7 @@ class Constants {
 
   Constants() {
     dialectConstants.put(SqlDialect.Sql.sqlDialect + Constants.Actions.SEPARATOR.action, "");
-    dialectConstants.put(Constants.SqlDialect.Postgres.sqlDialect + "SEPARATOR", "`");
+    dialectConstants.put(Constants.SqlDialect.Postgres.sqlDialect + Constants.Actions.SEPARATOR.action, "`");
   }
 
   public String getAction(String dialect, Actions action) {
