@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.github.derickfelix.Constants.JOIN;
+import com.github.derickfelix.Join.JOIN;
 
 class Tables {
   private List<String> fields;

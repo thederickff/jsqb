@@ -15,30 +15,28 @@
  */
 package com.github.derickfelix;
 
-import java.util.List;
-
-import com.github.derickfelix.Constants.JOIN;
+import com.github.derickfelix.Join.JOIN;
 
 /**
- * @author derickfelix
+ * @author STR4NG3R
  */
-public class Selector {
+public class Selector extends QueryBuilder {
 
   private Tables tables = new Tables();
   private OrderGroupBy orderBy = new OrderGroupBy();
   private OrderGroupBy groupBy = new OrderGroupBy();
-  private Parameter parameter = new Parameter();
 
   private WhereHaving where;
   private WhereHaving having;
 
   Selector() {
+    super();
     initialize();
   }
 
   private void initialize() {
-    this.where = new WhereHaving(" WHERE ", parameter);
-    this.having = new WhereHaving(" HAVING ", parameter);
+    this.where = new WhereHaving(" WHERE ", this.parameter);
+    this.having = new WhereHaving(" HAVING ", this.parameter);
     this.orderBy = null;
     this.groupBy = null;
   }
@@ -90,7 +88,8 @@ public class Selector {
     return this;
   }
 
-  private String write() {
+  @Override
+  protected String write() {
     StringBuilder sql = this.tables.write();
 
     this.where.write(sql);
@@ -104,23 +103,6 @@ public class Selector {
       sql.append(" ORDER BY ").append(this.orderBy.write());
 
     return sql.toString();
-  }
-
-  public Parameter addParameter(String column, String value) {
-    return this.parameter.addParameter(column, value);
-  }
-
-  public Parameter addParameter(String column, String value, boolean b) {
-    return this.parameter.addParameter(column, value, b);
-  }
-
-  public SqlParameter getSqlAndParameters() {
-    String sql = this.write();
-
-    List<String> orderParameters = parameter.sortParameters(parameter.getIndexesOfOcurrences(sql));
-    sql = parameter.replaceParamatersOnSql(sql);
-
-    return new SqlParameter(sql, orderParameters);
   }
 
 }

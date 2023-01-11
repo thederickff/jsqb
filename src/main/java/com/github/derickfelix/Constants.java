@@ -25,17 +25,9 @@ class Constants {
     }
   };
 
-  public static enum JOIN {
-    INNER(" INNER JOIN "), LEFT(" LEFT JOIN "), RIGHT(" RIGHT JOIN ");
-
-    public String joinOpt;
-
-    private JOIN(String joinOpt) {
-      this.joinOpt = joinOpt;
-    }
-  }
-
   Constants() {
+    if (dialectConstants.isEmpty())
+      return;
     dialectConstants.put(SqlDialect.Sql.sqlDialect + Constants.Actions.SEPARATOR.action, "");
     dialectConstants.put(Constants.SqlDialect.Postgres.sqlDialect + Constants.Actions.SEPARATOR.action, "`");
   }

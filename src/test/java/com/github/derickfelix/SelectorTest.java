@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.derickfelix.Constants.JOIN;
+import com.github.derickfelix.Join.JOIN;
 
 /**
  *
@@ -56,7 +56,6 @@ public class SelectorTest {
   public void testMultipleInnerJoins() {
     System.out.println("MULTIPLE INNER JOINS");
 
-    Parameter p = new Parameter();
     String endDate = "12/12/2021";
     String startDate = null;
     String gaId = "1223424";
