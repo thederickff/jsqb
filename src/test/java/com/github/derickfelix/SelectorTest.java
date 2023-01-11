@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.derickfelix.Tables.JOIN;
+import com.github.derickfelix.Constants.JOIN;
 
 /**
  *

@@ -17,7 +17,7 @@ package com.github.derickfelix;
 
 import java.util.List;
 
-import com.github.derickfelix.Tables.JOIN;
+import com.github.derickfelix.Constants.JOIN;
 
 /**
  * @author derickfelix

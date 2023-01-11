@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.github.derickfelix.Constants.JOIN;
+
 class Tables {
   private List<String> fields;
   private List<Table> tables;
@@ -77,16 +79,6 @@ class Tables {
       this(name);
       this.join = join;
       this.on = on;
-    }
-  }
-
-  public static enum JOIN {
-    INNER(" INNER JOIN "), LEFT(" LEFT JOIN "), RIGHT(" RIGHT JOIN ");
-
-    public String joinOpt;
-
-    private JOIN(String joinOpt) {
-      this.joinOpt = joinOpt;
     }
   }
 
