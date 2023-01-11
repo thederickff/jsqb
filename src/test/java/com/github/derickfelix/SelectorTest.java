@@ -66,21 +66,21 @@ public class SelectorTest {
         .join(JOIN.INNER, "table_c as c", "table_c.a = table_a.c")
         .join(JOIN.RIGHT, "table_d as d", "table_d.a = table_c.a")
         .where("table_a.a > :lowerValue AND table_b.b < 20 AND table_c.c > :upperValue",
-            new Parameter("lowerValue", "12"),
-            new Parameter("upperValue", "15"))
+            jsqb.addParameter("lowerValue", "12"),
+            jsqb.addParameter("upperValue", "15"))
         .orderBy("a.a", true)
         .groupBy("a.a");
 
     if (endDate != null)
       jsqb.addSelect("a.startDate")
-          .andWhere("a.endDate = :endDate", new Parameter("endDate", endDate, true));
+          .andWhere("a.endDate = :endDate", jsqb.addParameter("endDate", endDate, true));
 
     if (gaId != null)
       jsqb.join(JOIN.INNER, "group_account as ga", "ga.id = a.group_account_id")
-          .andWhere("ga.id = :gaId", new Parameter("gaId", gaId));
+          .andWhere("ga.id = :gaId", jsqb.addParameter("gaId", gaId));
 
     if (startDate != null)
-      jsqb.andWhere("a.startDate= :startDate", new Parameter("startDate", startDate, true));
+      jsqb.andWhere("a.startDate= :startDate", jsqb.addParameter("startDate", startDate, true));
 
     jsqb.having("cRows > 1");
     jsqb.andHaving("cRows < 10");
@@ -95,8 +95,8 @@ public class SelectorTest {
     // System.out.println("TEST ORDER BY");
     // String exp = "SELECT holidays.* FROM holidays ORDER BY date_of_holiday DESC";
 
-    String act = jsqb.select("holidays").orderBy("date_of_holiday", true).write();
-    System.out.println(act);
+    SqlParameter act = jsqb.select("holidays").orderBy("date_of_holiday", true).getSqlAndParameters();
+    System.out.println(act.sql);
 
     // check(exp, act);
   }

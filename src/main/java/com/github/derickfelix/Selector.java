@@ -106,6 +106,14 @@ public class Selector {
     return sql.toString();
   }
 
+  public Parameter addParameter(String column, String value) {
+    return this.parameter.addParameter(column, value);
+  }
+
+  public Parameter addParameter(String column, String value, boolean b) {
+    return this.parameter.addParameter(column, value, b);
+  }
+
   public SqlParameter getSqlAndParameters() {
     String sql = this.write();
 

@@ -8,7 +8,7 @@ public class Tables {
   private List<String> fields;
   private List<Table> tables;
 
-  void init() {
+  Tables() {
     this.fields = new ArrayList<>();
     this.tables = new ArrayList<>();
   }

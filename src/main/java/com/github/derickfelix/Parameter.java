@@ -6,23 +6,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Parameter {
+public final class Parameter {
   public static String p = "(:[a-zA-Z0-9]+)";
   public static Pattern pattern = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
-  public HashMap<String, String> parameters;
+  public HashMap<String, String> parameters = new HashMap<>();
 
-  Parameter() {
-    parameters = new HashMap<>();
-  }
-
-  Parameter(String column, String value) {
+  public Parameter addParameter(String column, String value) {
     this.parameters.put(":" + column, value);
+    return this;
   }
 
-  public Parameter(String column, String value, boolean b) {
+  public Parameter addParameter(String column, String value, boolean b) {
     if (b)
       value = "\"" + value + "\"";
     this.parameters.put(":" + column, value);
+    return this;
   }
 
   public List<String> getIndexesOfOcurrences(String sql) {
