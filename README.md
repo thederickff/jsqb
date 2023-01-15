@@ -2,6 +2,7 @@ SQL Query Builder
 =================
 
 Stop to lost time writing repeated SQL queries and let Java SQL Query Builder do the job for you. It's simple, fast and lightweight. **You don't need to make a connection with a database.** 
+This project could be implement in any kind of Java Project since there's any dependency.
 
 <a name="index_block"></a>
 
@@ -58,8 +59,8 @@ If the project doesn't have any GitHub Releases you can use the short commit has
 public class Usage {
     public static void main(String[] args)
     {
-        Jsqb jsqb = new Jsqb();
-        String sql = jsqb.select("users").write();
+        Selector selector = new Selector();
+        String sql = selector.select("users").write();
     
         System.out.println(sql);
     }
@@ -77,8 +78,10 @@ SELECT users.* FROM users
 public class Usage {
     public static void main(String[] args)
     {
-        Jsqb jsqb = new Jsqb();
-        String sql = jsqb.select("users", "id", "name", "email").write();
+        Selector selector = new Selector();
+        String sql = selector.select("users", "id")
+        addSelect("name", "email")
+        .write();
     
         System.out.println(sql);
     }
@@ -90,16 +93,23 @@ SELECT users.id, users.name, users.email FROM users
 ```
 
 <a name="block2.3"></a>
-### 2.2. Aliased SELECT statement [↑](#index_block) 
-The same of the previous one but with more information.
+### 2.2. SELECT with where statement [↑](#index_block) 
+Add a filter criteria to select statement
 
 #### Usage:
 ```java
 public class Usage {
     public static void main(String[] args)
     {
-        Jsqb jsqb = new Jsqb();
-        String sql = jsqb.select("users", "id as userId", "name as username", "email as receiver").write();
+        String username = "a";
+        String email = "anemail@example.com";
+
+        Selector jsqb = new Selector();
+        String sql = jsqb
+        .select("users", "id as userId", "name as username", "email as receiver")
+        .where("username LIKE \"%:username\"", selector.addParameter("username", username))
+        .andWhere("email = :email", selector.addParameter("email", email, true))
+        .write();
     
         System.out.println(sql);
     }
@@ -108,6 +118,7 @@ public class Usage {
 #### Output:
 ```sql
 SELECT users.id as userId, users.name as username, users.email as receiver FROM users
+WHERE usename LIKE "%?" AND email "?"
 ```
 
 <a name="block3"></a>
@@ -115,9 +126,9 @@ SELECT users.id as userId, users.name as username, users.email as receiver FROM 
 
 <a name="block3.1"></a>
 ### 3.1. Simple Inner join [↑](#index_block)
-The `innerJoin()` method expects the `tableName`, and the `on` detail, and the `fields` parameter is optional.
+The `join()` method expects an enum of possible type of JOIN
 This method is described as:
-`innerJoin(String tableName, String on, String... fields)`.
+`innerJoin(JOIN join,String table, String on)`.
 
 #### Usage:
 ```java

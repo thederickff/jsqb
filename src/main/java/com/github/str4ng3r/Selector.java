@@ -92,6 +92,19 @@ public class Selector extends QueryBuilder {
     return this;
   }
 
+  String getCount(String sql) {
+    return "SELECT COUNT(*) FROM ( " + sql + " )";
+  }
+
+  public void getPagination(SqlParameter sqlP, Pagination pagination) {
+    int lower = pagination.pageSize * pagination.currentPage;
+    if (lower > pagination.count)
+      return;
+    int upper = lower + pagination.pageSize;
+    sqlP.sql += parameter.setParameter(constants.getAction(Constants.Actions.PAGINATION),
+        new String[] { Integer.toString(lower), Integer.toString(upper) });
+  }
+
   @Override
   protected String write() {
     StringBuilder sql = this.tables.write();

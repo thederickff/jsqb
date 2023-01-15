@@ -57,6 +57,14 @@ public final class Parameter {
     return sql.replaceAll(p, "?");
   }
 
+  String setParameter(String sql, String[] parameters) {
+    Matcher m = Parameter.pattern.matcher(sql);
+    int c = 0;
+    while (m.find())
+      m.replaceFirst(parameters[c++]);
+    return sql;
+  }
+
   List<String> sortParameters(List<String> indexes) {
     List<String> sortedParameters = new ArrayList<>();
 

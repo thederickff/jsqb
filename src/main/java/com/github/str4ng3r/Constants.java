@@ -38,24 +38,34 @@ class Constants {
   }
 
   public static enum Actions {
-    SEPARATOR("SEPARATOR");
-
-    public String action;
-
-    Actions(String action) {
-      this.action = action;
-    }
+    SEPARATOR, PAGINATION;
   };
+
+  private String sqlDialect = SqlDialect.Sql.sqlDialect;
 
   Constants() {
     if (dialectConstants.isEmpty())
       return;
-    dialectConstants.put(SqlDialect.Sql.sqlDialect + Constants.Actions.SEPARATOR.action, "");
-    dialectConstants.put(Constants.SqlDialect.Postgres.sqlDialect + Constants.Actions.SEPARATOR.action, "`");
+    dialectConstants.put(SqlDialect.Sql.sqlDialect + Constants.Actions.SEPARATOR, "");
+    dialectConstants.put(Constants.SqlDialect.Postgres.sqlDialect + Constants.Actions.SEPARATOR, "`");
+    dialectConstants.put(Constants.SqlDialect.Oracle.sqlDialect + Constants.Actions.PAGINATION,
+        "OFSSET :low ROWS FETCH NEXT :upper ROWS ONLY");
+    dialectConstants.put(Constants.SqlDialect.Mysql.sqlDialect + Constants.Actions.PAGINATION,
+        "LIMIT :low, :upper");
+    dialectConstants.put(Constants.SqlDialect.Sql.sqlDialect + Constants.Actions.PAGINATION,
+        "LIMIT :low OFFSET :upper");
   }
 
-  public String getAction(String dialect, Actions action) {
-    String k = dialect + action.action;
+  public void setDialect(SqlDialect sql) {
+    sqlDialect = sql.sqlDialect;
+  }
+
+  public String getSqlDialect() {
+    return sqlDialect;
+  }
+
+  public String getAction(Actions action) {
+    String k = sqlDialect + action;
     if (dialectConstants.containsKey(k))
       return dialectConstants.get(k);
 
