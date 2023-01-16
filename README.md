@@ -129,7 +129,7 @@ public class Usage {
 ```sql
 SELECT u.id, u.name, u.email, r.name, r.level, a.street, a.cp, a.number FROM users 
 INNER JOIN roles r ON r.id = u.role_id
-RIGHT JOIN address as a a.user_id = u.id
+RIGHT JOIN address ON a a.user_id = u.id
 ```
 
 <a name="block4"></a>
