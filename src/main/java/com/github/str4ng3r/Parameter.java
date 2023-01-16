@@ -76,8 +76,12 @@ public final class Parameter {
     return sortedParameters;
   }
 
+  /**
+   * Filter parameters
+   *
+   * @param parameterToRemove [TODO:description]
+   */
   void filterParameter(List<String> parameterToRemove) {
     parameterToRemove.parallelStream().forEach(p -> parameters.remove(p));
   }
-
 }

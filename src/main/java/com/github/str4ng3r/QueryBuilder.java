@@ -42,6 +42,11 @@ abstract class QueryBuilder {
 
   abstract protected String write();
 
+  /**
+   * Generate SQL Statement with paramaters
+   *
+   * @return SqlParameter
+   */
   public SqlParameter getSqlAndParameters() {
     String sql = this.write();
 

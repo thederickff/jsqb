@@ -96,9 +96,6 @@ public class SelectorTest {
 
   @Test
   public void testOrderBy() {
-    // System.out.println("TEST ORDER BY");
-    // String exp = "SELECT holidays.* FROM holidays ORDER BY date_of_holiday DESC";
-
     SqlParameter act = jsqb.select("holidays").orderBy("date_of_holiday", true).getSqlAndParameters();
     System.out.println(act.sql);
     System.out.println(act.paramaters);

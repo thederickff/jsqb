@@ -18,6 +18,7 @@
  */
 package com.github.str4ng3r;
 
+import com.github.str4ng3r.Constants.SqlDialect;
 import com.github.str4ng3r.Join.JOIN;
 
 /**
@@ -45,48 +46,137 @@ public class Selector extends QueryBuilder {
     this.groupBy = null;
   }
 
+  /**
+   * Initialize select and put the first table to join
+   *
+   * @param tableName
+   * @param fields
+   *
+   * @return same object as pipe
+   */
   public Selector select(String tableName, String... fields) {
     this.tables.addTable(tableName, fields);
     return this;
   }
 
+  /**
+   * Add more fields to satement
+   *
+   * @param fields An list to fields to fetch
+   *
+   * @return same object as pipe
+   */
   public Selector addSelect(String... fields) {
     this.tables.addFields(fields);
     return this;
   }
 
+  /**
+   * Add join to statement
+   *
+   * @param join      An valid enum of join types
+   * @param tableName A source to join could be a query or table
+   * @param on        Login to join tables
+   *
+   * @return same object as pipe
+   */
   public Selector join(JOIN join, String tableName, String on) {
     tables.addJoin(join, tableName, on);
     return this;
   }
 
+  /**
+   * Add order by to statement
+   *
+   * @param orderBy
+   * @param descending
+   *
+   * @return same object as pipe
+   */
   public Selector orderBy(String orderBy, boolean descending) {
     this.orderBy = new OrderGroupBy();
     this.orderBy.orderBy(orderBy, descending);
     return this;
   }
 
+  /**
+   * Add group by to statement
+   * Pass columns to group by separae by ,
+   *
+   * @param columns
+   *
+   * @return same object as pipe
+   */
   public Selector groupBy(String columns) {
     this.groupBy = new OrderGroupBy();
     this.groupBy.groupBy(columns);
     return this;
   }
 
+  /**
+   * Set valid SQL Synthax to generate SQL according to different types of
+   * databases
+   *
+   * @param sqlDialect An enum of supported databases
+   *
+   * @return same object as pipe
+   */
+  public Selector setDialect(SqlDialect sqlDialect) {
+    constants.setDialect(sqlDialect);
+    return this;
+  }
+
+  /**
+   * This initialize the having (If there's any previous filter criteria should be
+   * reset)
+   *
+   * @param criteria
+   * @param parameters
+   *
+   * @return same object as pipe
+   */
   public Selector having(String criteria, Parameter... parameters) {
     this.having.addCriteria(criteria, parameters);
     return this;
   }
 
+  /**
+   * Add more filter criteria to previous criteria
+   *
+   * @param criteria
+   * @param parameters
+   *
+   * @return same object as pipe
+   */
   public Selector andHaving(String criteria, Parameter... parameters) {
     this.having.andAddCriteria(criteria, parameters);
     return this;
   }
 
+  public
+
+  /**
+   * This initialize the where (If there's any previous filter criteria should be
+   * reset)
+   *
+   * @param criteria
+   * @param parameters
+   *
+   * @return same object as pipe
+   */
   public Selector where(String criteria, Parameter... parameters) {
     this.where.addCriteria(criteria, parameters);
     return this;
   }
 
+  /**
+   * Add more filter criteria to previous criteria
+   *
+   * @param criteria
+   * @param parameters
+   *
+   * @return same object as pipe
+   */
   public Selector andWhere(String criteria, Parameter... parameters) {
     this.where.andAddCriteria(criteria, parameters);
     return this;
@@ -96,10 +186,16 @@ public class Selector extends QueryBuilder {
     return "SELECT COUNT(*) FROM ( " + sql + " )";
   }
 
+  /**
+   * Return a querybuilder with pagination
+   *
+   * @param criteria
+   * @param parameters
+   *
+   * @return same object as pipe
+   */
   public void getPagination(SqlParameter sqlP, Pagination pagination) {
     int lower = pagination.pageSize * pagination.currentPage;
-    if (lower > pagination.count)
-      return;
     int upper = lower + pagination.pageSize;
     sqlP.sql += parameter.setParameter(constants.getAction(Constants.Actions.PAGINATION),
         new String[] { Integer.toString(lower), Integer.toString(upper) });
