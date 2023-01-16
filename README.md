@@ -136,8 +136,11 @@ public class Usage {
     public static void main(String[] args)
     {
         Jsqb jsqb = new Jsqb();
-        String sql = jsqb.select("users", "id", "name", "email")
-                             .innerJoin("roles", "roles.id = users.role_id", "name", "level")
+        String sql = jsqb.select("users as u", "id", "name", "email")
+                             .join(JOIN.INNER, "roles as r", "r.id = u.role_id")
+                             .addSelect("r.name", "r.id", "r.level")
+                             .join(JOIN.RIGHT, "address as a", "a.user_id = u.id")
+                             .addSelect("a.street", "a.cp", "a.number")
                              .write();
     
         System.out.println(sql);
@@ -146,16 +149,24 @@ public class Usage {
 ```
 #### Output:
 ```sql
-SELECT users.id, users.name, users.email, roles.name, roles.level FROM users 
-INNER JOIN roles on roles.id = users.role_id
+SELECT u.id, u.name, u.email, r.name, r.level, a.street, a.cp, a.number FROM users 
+INNER JOIN roles r ON r.id = u.role_id
+RIGHT JOIN address as a a.user_id = u.id
 ```
 
 <a name="block4"></a>
-## 4. Author [↑](#index_block)
+## 4. Authors [↑](#index_block)
 Derick Felix
+
 
  - <derickfelix@zoho.com>
  - [https://github.com/derickfelix](https://github.com/derickfelix)
+
+Pablo Eduardo Martinez Solis
+
+
+ - <pablo980629@hotmail.com>
+ - [https://github.com/STR4NG3R](https://github.com/STR4NG3R)
 
 
 <a name="block5"></a>
@@ -163,17 +174,20 @@ Derick Felix
 Java SQL Query Builder is licensed under the Apache license.
 
 ```
-Copyright 2018 derickfelix.
+The GPLv3 License (GPLv3)
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
- 
-     http://www.apache.org/licenses/LICENSE-2.0
- 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Copyright (c) 2023 Pablo Eduardo Martinez Solis, Derick Felix
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
