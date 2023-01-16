@@ -57,12 +57,19 @@ public final class Parameter {
     return sql.replaceAll(p, "?");
   }
 
-  String setParameter(String sql, String[] parameters) {
+  String setParameter(String sql, String... parameters) {
     Matcher m = Parameter.pattern.matcher(sql);
-    int c = 0;
-    while (m.find())
-      m.replaceFirst(parameters[c++]);
-    return sql;
+    int c = 0, groupPosition = 1;
+    StringBuffer sb = new StringBuffer();
+
+    while (m.find() && c < parameters.length) {
+      StringBuffer buf = new StringBuffer(m.group());
+      buf.replace(m.start(groupPosition) - m.start(), m.end(groupPosition) - m.start(), parameters[c++]);
+      m.appendReplacement(sb, buf.toString());
+    }
+
+    m.appendTail(sb);
+    return sb.toString();
   }
 
   List<String> sortParameters(List<String> indexes) {
@@ -79,7 +86,7 @@ public final class Parameter {
   /**
    * Filter parameters
    *
-   * @param parameterToRemove [TODO:description]
+   * @param parameterToRemove
    */
   void filterParameter(List<String> parameterToRemove) {
     parameterToRemove.parallelStream().forEach(p -> parameters.remove(p));

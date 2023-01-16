@@ -28,9 +28,18 @@ import java.util.List;
 public class SqlParameter {
   public String sql;
   public List<String> paramaters = new ArrayList<>();
+  protected Pagination p = null;
 
   SqlParameter(String sql, List<String> paramaters) {
     this.sql = sql;
     this.paramaters = paramaters;
+  }
+
+  @Override
+  public String toString() {
+    String query = "{\n\tsql: \"" + this.sql + "\",\n\tparameters: " + this.paramaters;
+    if (p != null)
+      query += ",\n\tpagination: " + p;
+    return query + "\n}";
   }
 }

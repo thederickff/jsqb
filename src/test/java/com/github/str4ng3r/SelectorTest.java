@@ -55,14 +55,8 @@ public class SelectorTest {
   public void tearDown() {
   }
 
-  @Test
-  public void testMultipleInnerJoins() {
-    System.out.println("MULTIPLE INNER JOINS");
-
-    String endDate = "12/12/2021";
-    String startDate = null;
-    String gaId = "1223424";
-    jsqb
+  Selector baseQuery() {
+    return new Selector()
         .select("table_a as a", "COUNT(a.a) as cRows", "a.b", "a.c", "b.a", "c.a",
             "IF (:endDate > '12/10/2022', 'HOla', 'fdadfs')", ":gaId")
         .join(JOIN.LEFT, "table_b as b", "table_b.a = table_a.b")
@@ -72,26 +66,51 @@ public class SelectorTest {
             jsqb.addParameter("lowerValue", "12"),
             jsqb.addParameter("upperValue", "15"))
         .orderBy("a.a", true)
-        .groupBy("a.a");
+        .groupBy("a.a")
+        .having("cRows > 1")
+        .setDialect(Constants.SqlDialect.Oracle)
+        .andHaving("cRows < 10");
+  }
 
+  @Test
+  public void testMultipleInnerJoins() {
+    System.out.println("MULTIPLE INNER JOINS");
+
+    String endDate = "12/12/2021";
+    String startDate = "1/01/2020";
+    String gaId = "1223424";
+
+    SqlParameter sql = testBaseQuery(baseQuery(), startDate, gaId, endDate, null, null);
+    System.out.println(sql);
+    sql = testBaseQuery(baseQuery(), startDate, gaId, endDate, 10, 20);
+    System.out.println(sql);
+
+  }
+
+  SqlParameter testBaseQuery(Selector selector, String startDate, String gaId, String endDate, Integer page,
+      Integer pageSize) {
     if (endDate != null)
-      jsqb.addSelect("a.startDate")
+      selector.addSelect("a.startDate")
           .andWhere("a.endDate = :endDate", jsqb.addParameter("endDate", endDate, true));
 
     if (gaId != null)
-      jsqb.join(JOIN.INNER, "group_account as ga", "ga.id = a.group_account_id")
+      selector.join(JOIN.INNER, "group_account as ga", "ga.id = a.group_account_id")
           .andWhere("ga.id = :gaId", jsqb.addParameter("gaId", gaId));
 
     if (startDate != null)
-      jsqb.andWhere("a.startDate= :startDate", jsqb.addParameter("startDate", startDate, true));
+      selector.andWhere("a.startDate= :startDate", jsqb.addParameter("startDate", startDate, true));
 
-    jsqb.having("cRows > 1");
-    jsqb.andHaving("cRows < 10");
+    if (page != null && pageSize != null) {
+      SqlParameter sql = selector.getSqlAndParameters();
 
-    SqlParameter act = jsqb.getSqlAndParameters();
-    System.out.println(act.sql);
-    System.out.println(act.paramaters);
+      // Execute this...
+      selector.getCount(sql.sql);
 
+      Integer count = 1000;
+      return selector.getPagination(sql, new Pagination(10, count, page));
+    }
+
+    return selector.getSqlAndParameters();
   }
 
   @Test

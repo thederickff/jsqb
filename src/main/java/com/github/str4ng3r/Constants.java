@@ -44,16 +44,16 @@ class Constants {
   private String sqlDialect = SqlDialect.Sql.sqlDialect;
 
   Constants() {
-    if (dialectConstants.isEmpty())
+    if (!dialectConstants.isEmpty())
       return;
     dialectConstants.put(SqlDialect.Sql.sqlDialect + Constants.Actions.SEPARATOR, "");
     dialectConstants.put(Constants.SqlDialect.Postgres.sqlDialect + Constants.Actions.SEPARATOR, "`");
     dialectConstants.put(Constants.SqlDialect.Oracle.sqlDialect + Constants.Actions.PAGINATION,
-        "OFSSET :low ROWS FETCH NEXT :upper ROWS ONLY");
+        " OFSSET :low ROWS FETCH NEXT :upper ROWS ONLY");
     dialectConstants.put(Constants.SqlDialect.Mysql.sqlDialect + Constants.Actions.PAGINATION,
-        "LIMIT :low, :upper");
+        " LIMIT :low, :upper");
     dialectConstants.put(Constants.SqlDialect.Sql.sqlDialect + Constants.Actions.PAGINATION,
-        "LIMIT :low OFFSET :upper");
+        " LIMIT :low OFFSET :upper");
   }
 
   public void setDialect(SqlDialect sql) {
