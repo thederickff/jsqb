@@ -22,30 +22,8 @@ This project could be implement in any kind of Java Project since there's any de
 For default installation, see [Releases](https://github.com/derickfelix/jsqb/releases) section to download the .jar file and add it to the path of your project.
 <a name="block1.1"></a>
 ### 1.1. Installation with Maven [↑](#index_block)
-To install with maven, you can use the [Jitpack](https://jitpack.io/) for that.
+To install with maven
 
-Step 1. Add the JitPack repository to your build file
-```xml
-<repositories>
-    ...
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-```
-Step 2. Add the dependency
-```xml
-<dependencies>
-    ...
-    <dependency>
-        <groupId>com.github.derickfelix</groupId>
-        <artifactId>jsqb</artifactId>
-        <version>LATEST</version>
-    </dependency>
-</dependencies>
-```
-If the project doesn't have any GitHub Releases you can use the short commit hash or 'master-SNAPSHOT' as the version. Check the [Jitpack](https://jitpack.io/) page for more details. 
 
 
 
