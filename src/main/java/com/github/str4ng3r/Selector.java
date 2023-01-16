@@ -153,8 +153,6 @@ public class Selector extends QueryBuilder {
     return this;
   }
 
-  public
-
   /**
    * This initialize the where (If there's any previous filter criteria should be
    * reset)
@@ -164,7 +162,7 @@ public class Selector extends QueryBuilder {
    *
    * @return same object as pipe
    */
-  public Selector where(String criteria, Parameter... parameters) {
+  public Selector wheree(String criteria, Parameter... parameters) {
     this.where.addCriteria(criteria, parameters);
     return this;
   }
@@ -182,7 +180,7 @@ public class Selector extends QueryBuilder {
     return this;
   }
 
-  String getCount(String sql) {
+  public String getCount(String sql) {
     return "SELECT COUNT(*) FROM ( " + sql + " )";
   }
 

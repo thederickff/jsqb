@@ -22,7 +22,7 @@ package com.github.str4ng3r;
  *
  * @author Pablo Eduardo Martinez Solis
  */
-public class Join {
+public final class Join {
   public static enum JOIN {
     INNER(" INNER JOIN "), LEFT(" LEFT JOIN "), RIGHT(" RIGHT JOIN ");
 
