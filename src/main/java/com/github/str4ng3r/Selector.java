@@ -162,7 +162,7 @@ public class Selector extends QueryBuilder {
    *
    * @return same object as pipe
    */
-  public Selector wheree(String criteria, Parameter... parameters) {
+  public Selector where(String criteria, Parameter... parameters) {
     this.where.addCriteria(criteria, parameters);
     return this;
   }
