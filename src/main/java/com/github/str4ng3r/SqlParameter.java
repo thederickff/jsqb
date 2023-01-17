@@ -37,6 +37,7 @@ public class SqlParameter {
 
   @Override
   public String toString() {
+    System.out.println(paramaters.size());
     String query = "{\n\tsql: \"" + this.sql + "\",\n\tparameters: " + this.paramaters;
     if (p != null)
       query += ",\n\tpagination: " + p;

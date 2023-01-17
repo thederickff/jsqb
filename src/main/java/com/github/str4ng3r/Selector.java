@@ -192,14 +192,14 @@ public class Selector extends QueryBuilder {
    *
    * @return same object as pipe
    */
-  public SqlParameter getPagination(SqlParameter sqlP, Pagination pagination) {
+  public Selector getPagination(SqlParameter sqlP, Pagination pagination) {
     int lower = pagination.pageSize * pagination.currentPage;
     int upper = lower + pagination.pageSize;
     pagination.totalPages = (int) Math.ceil(pagination.count / pagination.pageSize);
     sqlP.sql += parameter.setParameter(constants.getAction(Constants.Actions.PAGINATION),
         Integer.toString(lower), Integer.toString(upper));
     sqlP.p = pagination;
-    return sqlP;
+    return this;
   }
 
   @Override

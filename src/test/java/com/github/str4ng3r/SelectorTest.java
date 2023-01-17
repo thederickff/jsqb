@@ -84,30 +84,32 @@ public class SelectorTest {
     System.out.println(sql);
     sql = testBaseQuery(baseQuery(), startDate, gaId, endDate, 10, 20);
     System.out.println(sql);
-
+    sql = testBaseQuery(baseQuery().setDialect(Constants.SqlDialect.Mysql), startDate, gaId, endDate, 10, 20);
+    System.out.println(sql);
   }
 
   SqlParameter testBaseQuery(Selector selector, String startDate, String gaId, String endDate, Integer page,
       Integer pageSize) {
     if (endDate != null)
       selector.addSelect("a.startDate")
-          .andWhere("a.endDate = :endDate", jsqb.addParameter("endDate", endDate, true));
+          .andWhere("a.endDate = :endDate", selector.addParameter("endDate", endDate, true));
 
     if (gaId != null)
       selector.join(JOIN.INNER, "group_account as ga", "ga.id = a.group_account_id")
-          .andWhere("ga.id = :gaId", jsqb.addParameter("gaId", gaId));
+          .andWhere("ga.id = :gaId", selector.addParameter("gaId", gaId));
 
     if (startDate != null)
-      selector.andWhere("a.startDate= :startDate", jsqb.addParameter("startDate", startDate, true));
+      selector.andWhere("a.startDate= :startDate", selector.addParameter("startDate", startDate, true));
 
     if (page != null && pageSize != null) {
       SqlParameter sql = selector.getSqlAndParameters();
+      System.out.println(sql);
 
       // Execute this...
       selector.getCount(sql.sql);
 
       Integer count = 1000;
-      return selector.getPagination(sql, new Pagination(10, count, page));
+      selector.getPagination(sql, new Pagination(pageSize, count, page));
     }
 
     return selector.getSqlAndParameters();
