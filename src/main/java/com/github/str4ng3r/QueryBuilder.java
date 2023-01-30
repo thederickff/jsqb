@@ -28,7 +28,7 @@ import com.github.str4ng3r.Join.JOIN;
  *
  * @author Pablo Eduardo Martinez Solis
  */
-abstract class QueryBuilder <T> {
+abstract class QueryBuilder<T> {
   protected Constants constants = new Constants();
   protected Parameter parameter = new Parameter();
   protected WhereHaving where;
@@ -39,11 +39,11 @@ abstract class QueryBuilder <T> {
     initialize();
   }
 
-  private void initialize (){
+  private void initialize() {
     this.where = new WhereHaving(" WHERE ", this.parameter);
   }
 
-  protected void setReferenceObject (T t){
+  protected void setReferenceObject(T t) {
     this.t = t;
   }
 
@@ -72,19 +72,6 @@ abstract class QueryBuilder <T> {
   }
 
   /**
-   * This should init from 
-   * 
-   * @param criteria
-   * @param parameters
-   *
-   * @return same object as pipe
-   */
-  public T from (String...tableNames) {
-    this.tables.from(tableNames);
-    return t;
-  }
-
-  /**
    * This initialize the where (If there's any previous filter criteria should be
    * reset)
    *
@@ -93,7 +80,7 @@ abstract class QueryBuilder <T> {
    *
    * @return same object as pipe
    */
-  public T where (String criteria, Parameter... parameters) {
+  public T where(String criteria, Parameter... parameters) {
     this.where.addCriteria(criteria, parameters);
     return t;
   }

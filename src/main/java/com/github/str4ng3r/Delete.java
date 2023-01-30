@@ -18,8 +18,6 @@
  */
 package com.github.str4ng3r;
 
-import com.github.str4ng3r.Constants.SqlDialect;
-import com.github.str4ng3r.Join.JOIN;
 import com.github.str4ng3r.Tables.ACTIONSQL;
 
 /**
@@ -28,14 +26,27 @@ import com.github.str4ng3r.Tables.ACTIONSQL;
  */
 public class Delete extends QueryBuilder<Delete> {
 
-  public Delete(){
+  public Delete() {
     super();
     super.setReferenceObject(this);
     initialize();
   }
 
-  private void initialize(){
+  private void initialize() {
     this.tables = new Tables(ACTIONSQL.DELETE);
+  }
+
+  /**
+   * This should init from
+   * 
+   * @param criteria
+   * @param parameters
+   *
+   * @return same object as pipe
+   */
+  public Delete from(String... tableNames) {
+    this.tables.from(tableNames);
+    return this;
   }
 
   @Override
