@@ -31,8 +31,20 @@ import com.github.str4ng3r.Join.JOIN;
 class Tables {
   private List<String> fields;
   private List<Table> tables;
+  private ACTIONSQL action;
 
-  Tables() {
+  public static enum ACTIONSQL {
+    DELETE("DELETE "), UPDATE("UPDATE "), SELECT("SELECT ");
+
+    public String action;
+
+    ACTIONSQL(String action) {
+      this.action = action;
+    }
+  };
+
+  public Tables(ACTIONSQL action) {
+    this.action = action;
     this.fields = new ArrayList<>();
     this.tables = new ArrayList<>();
   }
@@ -41,9 +53,14 @@ class Tables {
     this.fields.addAll(Arrays.asList(fields));
   }
 
-  public void addTable(String name, String... fields) {
+  public void from(String... tableNames) {
+    for (String t : tableNames)
+      this.tables.add(new Table(t));
+  }
+
+  public void addTable(String tableName, String... fields) {
     this.fields.clear();
-    this.tables.add(new Table(name));
+    this.tables.add(new Table(tableName));
     this.addFields(fields);
   }
 
@@ -65,12 +82,14 @@ class Tables {
     if (getTables().size() == 0)
       return sql.append("Not valid sql");
 
-    sql.append("SELECT ");
+    sql.append(this.action.action);
 
-    if (fields.size() > 1) {
-      fillWithFields(sql);
-    } else {
-      sql.append(" * ");
+    if (this.action == ACTIONSQL.SELECT) {
+      if (fields.size() > 1) {
+        fillWithFields(sql);
+      } else {
+        sql.append(" * ");
+      }
     }
 
     sql.append(" FROM ").append(tables.get(0).name);

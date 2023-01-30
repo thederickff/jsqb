@@ -21,15 +21,30 @@ package com.github.str4ng3r;
 
 import java.util.List;
 
+import com.github.str4ng3r.Constants.SqlDialect;
+import com.github.str4ng3r.Join.JOIN;
+
 /**
  *
  * @author Pablo Eduardo Martinez Solis
  */
-abstract class QueryBuilder {
+abstract class QueryBuilder <T> {
   protected Constants constants = new Constants();
   protected Parameter parameter = new Parameter();
+  protected WhereHaving where;
+  protected Tables tables;
+  T t;
 
   QueryBuilder() {
+    initialize();
+  }
+
+  private void initialize (){
+    this.where = new WhereHaving(" WHERE ", this.parameter);
+  }
+
+  protected void setReferenceObject (T t){
+    this.t = t;
   }
 
   public Parameter addParameter(String column, String value) {
@@ -55,4 +70,72 @@ abstract class QueryBuilder {
 
     return new SqlParameter(sql, orderParameters);
   }
+
+  /**
+   * This should init from 
+   * 
+   * @param criteria
+   * @param parameters
+   *
+   * @return same object as pipe
+   */
+  public T from (String...tableNames) {
+    this.tables.from(tableNames);
+    return t;
+  }
+
+  /**
+   * This initialize the where (If there's any previous filter criteria should be
+   * reset)
+   *
+   * @param criteria
+   * @param parameters
+   *
+   * @return same object as pipe
+   */
+  public T where (String criteria, Parameter... parameters) {
+    this.where.addCriteria(criteria, parameters);
+    return t;
+  }
+
+  /**
+   * Add more filter criteria to previous criteria
+   *
+   * @param criteria
+   * @param parameters
+   *
+   * @return same object as pipe
+   */
+  public T andWhere(String criteria, Parameter... parameters) {
+    this.where.andAddCriteria(criteria, parameters);
+    return t;
+  }
+
+  /**
+   * Set valid SQL Synthax to generate SQL according to different types of
+   * databases
+   *
+   * @param sqlDialect An enum of supported databases
+   *
+   * @return same object as pipe
+   */
+  public T setDialect(SqlDialect sqlDialect) {
+    constants.setDialect(sqlDialect);
+    return t;
+  }
+
+  /**
+   * Add join to statement
+   *
+   * @param join      An valid enum of join types
+   * @param tableName A source to join could be a query or table
+   * @param on        Login to join tables
+   *
+   * @return same object as pipe
+   */
+  public T join(JOIN join, String tableName, String on) {
+    tables.addJoin(join, tableName, on);
+    return t;
+  }
+
 }

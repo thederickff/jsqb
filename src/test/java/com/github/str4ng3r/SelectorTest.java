@@ -55,6 +55,15 @@ public class SelectorTest {
   public void tearDown() {
   }
 
+  @Test
+  public void testDelete (){
+    new Delete()
+    .from("users u")
+    .join(JOIN.INNER, "additional_properties ap", "u.id = ap.user_id")
+    .where("ap.need_to_delete = TRUE")
+    .getSqlAndParameters();
+  }
+
   Selector baseQuery() {
     return new Selector()
         .select("table_a as a", "COUNT(a.a) as cRows", "a.b", "a.c", "b.a", "c.a",
