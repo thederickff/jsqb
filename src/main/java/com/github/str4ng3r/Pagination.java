@@ -1,5 +1,7 @@
 package com.github.str4ng3r;
 
+import com.github.str4ng3r.Constants.SqlDialect;
+
 public class Pagination {
   Integer pageSize;
   Integer count;
@@ -27,11 +29,16 @@ public class Pagination {
 
   protected void calculatePagination(SqlParameter sqlP, Constants constants, Parameter parameter) {
     int lower = pageSize * currentPage;
-    int upper = lower + pageSize;
+    int upper = 0;
+    if (constants.getSqlDialect() == SqlDialect.Oracle.sqlDialect)
+      upper = pageSize;
+    else
+      upper = lower + pageSize;
+
     totalPages = (int) Math.ceil(count / pageSize);
+    sqlP.p = this;
     sqlP.sql += parameter.setParameter(constants.getAction(Constants.Actions.PAGINATION),
         Integer.toString(lower), Integer.toString(upper));
-    sqlP.p = this;
   }
 
   public Integer getPageSize() {
