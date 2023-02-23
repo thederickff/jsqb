@@ -21,6 +21,7 @@ package com.github.str4ng3r;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.str4ng3r.Join.JOIN;
 
@@ -68,13 +69,14 @@ class Tables {
     this.tables.add(new Table(join.joinOpt, name, on));
   }
 
-  private void fillWithFields(StringBuilder sql) {
-    int lastElement = this.fields.size() - 1;
-    for (int i = 0; i < lastElement; i++) {
-      String field = this.fields.get(i);
-      sql.append(field).append(", ");
-    }
-    sql.append(fields.get(lastElement)).append(" ");
+  private void addSeparator(List<String> list, StringBuilder sql) {
+    sql.append(
+        list.stream().map(f -> f).collect(Collectors.joining(", ")));
+  }
+
+  private void addSeparatorTables(List<Table> list, StringBuilder sql) {
+    sql.append(
+        list.stream().map(f -> f.name).collect(Collectors.joining(", ")));
   }
 
   public StringBuilder write() {
@@ -85,14 +87,23 @@ class Tables {
     sql.append(this.action.action);
 
     if (this.action == ACTIONSQL.SELECT) {
-      if (fields.size() > 1) {
-        fillWithFields(sql);
-      } else {
+      if (!fields.isEmpty())
+        addSeparator(fields, sql);
+      else
         sql.append(" * ");
-      }
+      sql.append(" FROM ");
+    } else if (this.action == ACTIONSQL.DELETE) {
+      if (!tables.isEmpty())
+        addSeparatorTables(tables, sql);
+      sql.append(" FROM ");
     }
 
-    sql.append(" FROM ").append(tables.get(0).name);
+    sql.append(tables.get(0).name);
+
+    if (this.action == ACTIONSQL.UPDATE) {
+      sql.append(" SET ");
+      addSeparator(fields, sql);
+    }
 
     for (int i = 1; i < tables.size(); i++) {
       Table table = tables.get(i);
