@@ -1,8 +1,13 @@
 package com.github.str4ng3r;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.github.str4ng3r.Tables.ACTIONSQL;
 
 public class Update extends QueryBuilder<Update> {
+
+    private final Set<String> columnsToExclude = new HashSet<String>();
 
     public Update() {
         super();
@@ -12,6 +17,12 @@ public class Update extends QueryBuilder<Update> {
 
     private void initialize() {
         this.tables = new Tables(ACTIONSQL.UPDATE);
+    }
+
+    public Update excludeColumns(String... columnsToExclude) {
+        for (String column : columnsToExclude) 
+            this.columnsToExclude.add(column);
+        return this;
     }
 
     /**

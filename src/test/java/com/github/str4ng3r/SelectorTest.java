@@ -62,18 +62,18 @@ public class SelectorTest {
         .join(JOIN.INNER, "additional_properties ap", "u.id = ap.user_id")
         .where("ap.need_to_delete = TRUE")
         .getSqlAndParameters();
-    System.out.println(sql);
+        System.out.println(sql);
   }
 
   @Test
   public void updateTest() {
     SqlParameter sql = new Update()
-        .from("users u")
+    .from("users u")
         .join(JOIN.INNER, "additional_properties ap", "u.id = ap.user_id")
         .where("ap.need_to_delete = TRUE")
         .getSqlAndParameters();
 
-    System.out.println(sql);
+        System.out.println(sql);
   }
 
   Selector baseQuery() {
