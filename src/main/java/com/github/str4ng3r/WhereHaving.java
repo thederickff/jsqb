@@ -56,7 +56,7 @@ final class WhereHaving {
   }
 
   public StringBuilder write(StringBuilder sql) {
-    if (listFilterCriteria.size() < 1)
+    if (listFilterCriteria.isEmpty())
       return sql;
     sql.append(prefix);
     listFilterCriteria.forEach(w -> sql.append(w));

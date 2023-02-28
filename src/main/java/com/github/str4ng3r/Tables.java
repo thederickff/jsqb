@@ -105,13 +105,12 @@ class Tables {
       addSeparator(fields, sql);
     }
 
-    for (int i = 1; i < tables.size(); i++) {
-      Table table = tables.get(i);
+    tables.forEach(table -> {
       sql.append(table.join)
           .append(table.name)
           .append(" ON ")
           .append(table.on);
-    }
+    });
 
     return sql;
   }
