@@ -81,7 +81,7 @@ class Tables {
 
   public StringBuilder write() {
     StringBuilder sql = new StringBuilder();
-    if (getTables().size() == 0)
+    if (getTables().isEmpty())
       return sql.append("Not valid sql");
 
     sql.append(this.action.action);
@@ -105,12 +105,13 @@ class Tables {
       addSeparator(fields, sql);
     }
 
-    tables.forEach(table -> {
+    for (int i = 1; i < tables.size(); i++) {
+      Table table = tables.get(i);
       sql.append(table.join)
           .append(table.name)
           .append(" ON ")
           .append(table.on);
-    });
+    }
 
     return sql;
   }

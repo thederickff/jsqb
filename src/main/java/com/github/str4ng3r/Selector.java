@@ -31,7 +31,7 @@ public class Selector extends QueryBuilder<Selector> {
 
   private WhereHaving having;
 
-  Selector() {
+  public Selector() {
     super();
     super.setReferenceObject(this);
     initialize();

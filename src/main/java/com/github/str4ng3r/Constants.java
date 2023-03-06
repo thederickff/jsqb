@@ -24,7 +24,7 @@ import java.util.HashMap;
  *
  * @author Pablo Eduardo Martinez Solis
  */
-class Constants {
+public class Constants {
   public static HashMap<String, String> dialectConstants = new HashMap<>();
 
   public static enum SqlDialect {
@@ -49,7 +49,7 @@ class Constants {
     dialectConstants.put(SqlDialect.Sql.sqlDialect + Constants.Actions.SEPARATOR, "");
     dialectConstants.put(Constants.SqlDialect.Postgres.sqlDialect + Constants.Actions.SEPARATOR, "`");
     dialectConstants.put(Constants.SqlDialect.Oracle.sqlDialect + Constants.Actions.PAGINATION,
-        " OFSSET :low ROWS FETCH NEXT :upper ROWS ONLY");
+        " OFFSET :low ROWS FETCH NEXT :upper ROWS ONLY");
     dialectConstants.put(Constants.SqlDialect.Mysql.sqlDialect + Constants.Actions.PAGINATION,
         " LIMIT :low, :upper");
     dialectConstants.put(Constants.SqlDialect.Sql.sqlDialect + Constants.Actions.PAGINATION,
