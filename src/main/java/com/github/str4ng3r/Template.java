@@ -5,6 +5,7 @@ public class Template<T> extends Pagination {
 
     public Template(SqlParameter sqlParameter, T data) {
         super(sqlParameter.p);
+        this.data = data;
     }
 
     public T getData() {
