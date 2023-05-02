@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.github.str4ng3r.Constants.SqlDialect;
 import com.github.str4ng3r.Join.JOIN;
+import com.github.str4ng3r.exceptions.InvalidSqlGeneration;
 
 /**
  *
@@ -55,14 +56,22 @@ abstract class QueryBuilder<T> {
     return this.parameter.addParameter(column, value, b);
   }
 
-  abstract protected String write();
+  /**
+   * Build query
+   *
+   * @return Sql
+   *
+   * @throws InvalidSqlGeneration
+   */
+  abstract protected String write() throws InvalidSqlGeneration;
 
   /**
    * Generate SQL Statement with paramaters
    *
    * @return SqlParameter
+   * @throws InvalidSqlGeneration
    */
-  public SqlParameter getSqlAndParameters() {
+  public SqlParameter getSqlAndParameters() throws InvalidSqlGeneration {
     String sql = this.write();
 
     List<String> orderParameters = parameter.sortParameters(parameter.getIndexesOfOcurrences(sql));

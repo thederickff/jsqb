@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.github.str4ng3r.Join.JOIN;
+import com.github.str4ng3r.exceptions.InvalidSqlGeneration;
 
 /**
  *
@@ -79,10 +80,10 @@ class Tables {
         list.stream().map(f -> f.name).collect(Collectors.joining(", ")));
   }
 
-  public StringBuilder write() {
+  public StringBuilder write() throws InvalidSqlGeneration {
     StringBuilder sql = new StringBuilder();
     if (getTables().isEmpty())
-      return sql.append("Not valid sql");
+      throw new InvalidSqlGeneration("Tables array is empty, so it could not generate the query");
 
     sql.append(this.action.action);
 

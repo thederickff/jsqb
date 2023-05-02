@@ -26,6 +26,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.str4ng3r.Join.JOIN;
+import com.github.str4ng3r.exceptions.InvalidCurrentPageException;
+import com.github.str4ng3r.exceptions.InvalidSqlGeneration;
 
 /**
  *
@@ -56,30 +58,29 @@ public class SelectorTest {
   }
 
   @Test
-  public void testDelete() {
+  public void testDelete() throws InvalidSqlGeneration {
     SqlParameter sql = new Delete()
         .from("users u")
         .join(JOIN.INNER, "additional_properties ap", "u.id = ap.user_id")
         .where("ap.need_to_delete = TRUE")
         .getSqlAndParameters();
-        System.out.println(sql);
+    System.out.println(sql);
   }
 
   @Test
-  public void updateTest() {
+  public void updateTest() throws InvalidSqlGeneration {
     SqlParameter sql = new Update()
-    .from("users u")
+        .from("users u")
         .join(JOIN.INNER, "additional_properties ap", "u.id = ap.user_id")
         .where("ap.need_to_delete = TRUE")
         .getSqlAndParameters();
 
-        System.out.println(sql);
+    System.out.println(sql);
   }
 
   Selector baseQuery() {
     return new Selector()
-        .select("table_a as a", "COUNT(a.a) as cRows", "a.b", "a.c", "b.a", "c.a",
-            "IF (:endDate > '12/10/2022', 'HOla', 'fdadfs')", ":gaId")
+        .select("table_a", "last_name", "first_name", "age")
         .join(JOIN.LEFT, "table_b as b", "table_b.a = table_a.b")
         .join(JOIN.INNER, "table_c as c", "table_c.a = table_a.c")
         .join(JOIN.RIGHT, "table_d as d", "table_d.a = table_c.a")
@@ -94,7 +95,7 @@ public class SelectorTest {
   }
 
   @Test
-  public void testMultipleInnerJoins() {
+  public void testMultipleInnerJoins() throws InvalidCurrentPageException, InvalidSqlGeneration {
     System.out.println("MULTIPLE INNER JOINS");
 
     String endDate = "12/12/2021";
@@ -110,7 +111,7 @@ public class SelectorTest {
   }
 
   SqlParameter testBaseQuery(Selector selector, String startDate, String gaId, String endDate, Integer page,
-      Integer pageSize) {
+      Integer pageSize) throws InvalidCurrentPageException, InvalidSqlGeneration {
     if (endDate != null)
       selector.addSelect("a.startDate")
           .andWhere("a.endDate = :endDate", selector.addParameter("endDate", endDate, true));
@@ -137,7 +138,7 @@ public class SelectorTest {
   }
 
   @Test
-  public void testOrderBy() {
+  public void testOrderBy() throws InvalidSqlGeneration {
     SqlParameter act = jsqb.select("holidays").orderBy("date_of_holiday", true).getSqlAndParameters();
     System.out.println(act.sql);
     System.out.println(act.paramaters);

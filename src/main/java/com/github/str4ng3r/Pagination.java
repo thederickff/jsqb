@@ -1,6 +1,7 @@
 package com.github.str4ng3r;
 
 import com.github.str4ng3r.Constants.SqlDialect;
+import com.github.str4ng3r.exceptions.InvalidCurrentPageException;
 
 public class Pagination {
   Integer pageSize;
@@ -27,8 +28,11 @@ public class Pagination {
     return "{\n\tpageSize: " + pageSize + ",\n\tcount: " + count + ",\n\tcurrentPage: " + currentPage + "\n\t}";
   }
 
-  protected void calculatePagination(SqlParameter sqlP, Constants constants, Parameter parameter) {
-    int lower = pageSize * currentPage;
+  protected void calculatePagination(SqlParameter sqlP, Constants constants, Parameter parameter)
+      throws InvalidCurrentPageException {
+    if (currentPage < 1)
+      throw new InvalidCurrentPageException("The page must be greater than 0");
+    int lower = pageSize * (currentPage - 1);
     int upper = 0;
     if (constants.getSqlDialect() == SqlDialect.Oracle.sqlDialect)
       upper = pageSize;
