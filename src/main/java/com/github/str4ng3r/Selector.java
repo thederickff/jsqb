@@ -125,7 +125,10 @@ public class Selector extends QueryBuilder<Selector> {
   }
 
   public String getCount(String sql) {
-    return "SELECT COUNT(*) FROM ( " + sql + " )";
+    String newSql = "SELECT COUNT(*) FROM ( " + sql + " )";
+    if (constants.getSqlDialect() == Constants.SqlDialect.Mysql.sqlDialect)
+      newSql += " AS  temp_count";
+    return newSql;
   }
 
   /**
