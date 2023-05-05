@@ -19,7 +19,7 @@
 package com.github.str4ng3r;
 
 import com.github.str4ng3r.Tables.ACTIONSQL;
-import com.github.str4ng3r.exceptions.InvalidSqlGeneration;
+import com.github.str4ng3r.exceptions.InvalidSqlGenerationException;
 
 /**
  *
@@ -51,7 +51,7 @@ public class Delete extends QueryBuilder<Delete> {
   }
 
   @Override
-  protected String write() throws InvalidSqlGeneration {
+  protected String write() throws InvalidSqlGenerationException {
     StringBuilder sql = this.tables.write();
 
     this.where.write(sql);

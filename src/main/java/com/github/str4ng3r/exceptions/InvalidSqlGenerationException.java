@@ -18,8 +18,8 @@
  */
 package com.github.str4ng3r.exceptions;
 
-public class InvalidSqlGeneration extends Exception {
-  public InvalidSqlGeneration(String error) {
+public class InvalidSqlGenerationException extends Exception {
+  public InvalidSqlGenerationException(String error) {
     super(error);
   }
 }

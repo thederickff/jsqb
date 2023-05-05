@@ -20,7 +20,7 @@ package com.github.str4ng3r;
 
 import com.github.str4ng3r.Tables.ACTIONSQL;
 import com.github.str4ng3r.exceptions.InvalidCurrentPageException;
-import com.github.str4ng3r.exceptions.InvalidSqlGeneration;
+import com.github.str4ng3r.exceptions.InvalidSqlGenerationException;
 
 /**
  *
@@ -142,13 +142,14 @@ public class Selector extends QueryBuilder<Selector> {
    * @return same object as pipe
    * @throws InvalidCurrentPageException
    */
-  public Selector getPagination(SqlParameter sqlP, Pagination pagination) throws InvalidCurrentPageException {
-    pagination.calculatePagination(sqlP, constants, parameter);
+  public Selector getPagination(SqlParameter sqlParameter, Pagination pagination) throws InvalidCurrentPageException {
+    sqlParameter.p = pagination;
+    pagination.calculatePagination(sqlParameter, constants, parameter);
     return this;
   }
 
   @Override
-  protected String write() throws InvalidSqlGeneration {
+  protected String write() throws InvalidSqlGenerationException {
     StringBuilder sql = this.tables.write();
 
     this.where.write(sql);
