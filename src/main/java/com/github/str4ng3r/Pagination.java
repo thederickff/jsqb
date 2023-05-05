@@ -25,21 +25,24 @@ public class Pagination {
 
   @Override
   public String toString() {
-    return "{\n\tpageSize: " + pageSize + ",\n\tcount: " + count + ",\n\tcurrentPage: " + currentPage + "\n\t}";
+    return "{\n\tpageSize: " + pageSize + ",\n\tcount: " + count + ",\n\tcurrentPage: " + currentPage
+        + "\n\ttotalPages: " + totalPages + "\n\t}";
   }
 
   protected void calculatePagination(SqlParameter sqlP, Constants constants, Parameter parameter)
       throws InvalidCurrentPageException {
     if (currentPage < 1)
       throw new InvalidCurrentPageException("The page must be greater than 0");
+
     int lower = pageSize * (currentPage - 1);
     int upper = 0;
+
     if (constants.getSqlDialect() == SqlDialect.Oracle.sqlDialect)
       upper = pageSize;
     else
       upper = lower + pageSize;
 
-    totalPages = (int) Math.ceil(count / pageSize);
+    totalPages = (int) Math.ceil((double) count / pageSize);
     sqlP.p = this;
     sqlP.sql += parameter.setParameter(constants.getAction(Constants.Actions.PAGINATION),
         Integer.toString(lower), Integer.toString(upper));

@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import com.github.str4ng3r.Join.JOIN;
 import com.github.str4ng3r.exceptions.InvalidCurrentPageException;
-import com.github.str4ng3r.exceptions.InvalidSqlGeneration;
+import com.github.str4ng3r.exceptions.InvalidSqlGenerationException;
 
 /**
  *
@@ -58,7 +58,7 @@ public class SelectorTest {
   }
 
   @Test
-  public void testDelete() throws InvalidSqlGeneration {
+  public void testDelete() throws InvalidSqlGenerationException {
     SqlParameter sql = new Delete()
         .from("users u")
         .join(JOIN.INNER, "additional_properties ap", "u.id = ap.user_id")
@@ -68,7 +68,7 @@ public class SelectorTest {
   }
 
   @Test
-  public void updateTest() throws InvalidSqlGeneration {
+  public void updateTest() throws InvalidSqlGenerationException {
     SqlParameter sql = new Update()
         .from("users u")
         .join(JOIN.INNER, "additional_properties ap", "u.id = ap.user_id")
@@ -95,7 +95,7 @@ public class SelectorTest {
   }
 
   @Test
-  public void testMultipleInnerJoins() throws InvalidCurrentPageException, InvalidSqlGeneration {
+  public void testMultipleInnerJoins() throws InvalidCurrentPageException, InvalidSqlGenerationException {
     System.out.println("MULTIPLE INNER JOINS");
 
     String endDate = "12/12/2021";
@@ -111,7 +111,7 @@ public class SelectorTest {
   }
 
   SqlParameter testBaseQuery(Selector selector, String startDate, String gaId, String endDate, Integer page,
-      Integer pageSize) throws InvalidCurrentPageException, InvalidSqlGeneration {
+      Integer pageSize) throws InvalidCurrentPageException, InvalidSqlGenerationException {
     if (endDate != null)
       selector.addSelect("a.startDate")
           .andWhere("a.endDate = :endDate", selector.addParameter("endDate", endDate, true));
@@ -138,7 +138,7 @@ public class SelectorTest {
   }
 
   @Test
-  public void testOrderBy() throws InvalidSqlGeneration {
+  public void testOrderBy() throws InvalidSqlGenerationException {
     SqlParameter act = jsqb.select("holidays").orderBy("date_of_holiday", true).getSqlAndParameters();
     System.out.println(act.sql);
     System.out.println(act.paramaters);
