@@ -34,7 +34,7 @@ abstract class QueryBuilder<T> {
   protected Parameter parameter = new Parameter();
   protected WhereHaving where;
   protected Tables tables;
-  T t;
+  protected T t;
 
   QueryBuilder() {
     initialize();

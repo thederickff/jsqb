@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
  */
 final class WhereHaving {
 
-  private List<String> listFilterCriteria = new ArrayList<>();
+  protected List<String> listFilterCriteria = new ArrayList<>();
   private boolean firstCriteria;
   private String prefix;
   private Parameter parameter;

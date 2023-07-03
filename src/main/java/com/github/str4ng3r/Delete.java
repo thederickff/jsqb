@@ -52,6 +52,9 @@ public class Delete extends QueryBuilder<Delete> {
 
   @Override
   protected String write() throws InvalidSqlGenerationException {
+    if (this.where.listFilterCriteria.isEmpty())
+      throw new InvalidSqlGenerationException("It's dangerous to create a delete without where");
+
     StringBuilder sql = this.tables.write();
 
     this.where.write(sql);

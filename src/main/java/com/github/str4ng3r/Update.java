@@ -41,8 +41,19 @@ public class Update extends QueryBuilder<Update> {
 
   @Override
   protected String write() throws InvalidSqlGenerationException {
-    StringBuilder sql = this.tables.write();
+    if (this.where.listFilterCriteria.isEmpty())
+      throw new InvalidSqlGenerationException("It's dangerous to create an update without where");
 
+    if (this.columnsToExclude.stream().anyMatch(k -> parameter.parameters.containsKey(":" + k)))
+      throw new InvalidSqlGenerationException("Can not update a column from database");
+
+    this.columnsToExclude.add("id");
+    this.parameter.parameters.forEach((k, v) -> {
+      if (!k.equals(":id"))
+        tables.addFields(k.substring(1) + " = " + k);
+    });
+
+    StringBuilder sql = this.tables.write();
     this.where.write(sql);
 
     return sql.toString();

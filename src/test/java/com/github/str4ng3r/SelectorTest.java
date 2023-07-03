@@ -96,8 +96,6 @@ public class SelectorTest {
 
   @Test
   public void testMultipleInnerJoins() throws InvalidCurrentPageException, InvalidSqlGenerationException {
-    System.out.println("MULTIPLE INNER JOINS");
-
     String endDate = "12/12/2021";
     String startDate = "1/01/2020";
     String gaId = "1223424";

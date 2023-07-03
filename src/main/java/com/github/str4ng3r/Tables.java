@@ -88,14 +88,13 @@ class Tables {
     sql.append(this.action.action);
 
     if (this.action == ACTIONSQL.SELECT) {
-      if (!fields.isEmpty())
-        addSeparator(fields, sql);
-      else
+      if (fields.isEmpty())
         sql.append(" * ");
+      else
+        addSeparator(fields, sql);
       sql.append(" FROM ");
     } else if (this.action == ACTIONSQL.DELETE) {
-      if (!tables.isEmpty())
-        addSeparatorTables(tables, sql);
+      addSeparatorTables(tables, sql);
       sql.append(" FROM ");
     }
 
