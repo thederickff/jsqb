@@ -17,6 +17,8 @@
  */
 package com.github.str4ng3r;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 
 import org.junit.Test;
@@ -36,26 +38,37 @@ public class UpdateTest {
     HashMap<String, String> testBaseData() {
         HashMap<String, String> dataToUpdate = new HashMap<String, String>();
         dataToUpdate.put("id", "200");
-        dataToUpdate.put("a.address", "Mexico City, Polanco #121");
         dataToUpdate.put("u.name", "Pablo Eduardo");
         dataToUpdate.put("u.lastName0", "Martinez");
         dataToUpdate.put("u.lastName1", "Solis");
         return dataToUpdate;
     }
 
-    @Test
-    public void testUnit() throws InvalidSqlGenerationException {
-        // try {
-            HashMap<String, String> data = testBaseData();
-            Update u = baseUpdateTest();
-            u.andWhere("u.id = :id", u.addParameter("id", data.get("id")));
-
-            data.forEach((k, v) -> u.addParameter(k, v));
-            System.out.println(u.getSqlAndParameters());
-        // } catch (InvalidSqlGenerationException e) {
-        //     // TODO Auto-generated catch block
-        //     System.out.println(e.getMessage());
-        //     e.printStackTrace();
-        // }
+    @Test(expected = InvalidSqlGenerationException.class)
+    public void failToUpdateExcludeColumn() throws InvalidSqlGenerationException {
+        HashMap<String, String> data = testBaseData();
+        Update u = baseUpdateTest();
+        u.andWhere("u.id = :id", u.addParameter("id", data.get("id")));
+        data.put("a.address", "A beautiful city");
+        data.forEach((k, v) -> u.addParameter(k, v));
+        u.getSqlAndParameters();
     }
+
+    @Test()
+    public void update() throws InvalidSqlGenerationException {
+        HashMap<String, String> data = testBaseData();
+        Update u = baseUpdateTest();
+        u.andWhere("u.id = :id", u.addParameter("id", data.get("id")));
+        data.forEach((k, v) -> u.addParameter(k, v));
+        String exp = "UPDATE users u SET u.name = ?, u.lastName1 = ?, u.lastName0 = ? INNER JOIN address a ON u.id = a.user_id WHERE u.id = ?";
+        check(exp, u.getSqlAndParameters().sql);
+    }
+
+    private void check(String exp, String act) {
+        System.out.println("Exp: " + exp.toLowerCase());
+        System.out.println("Act: " + act.toLowerCase());
+
+        assertEquals(exp, act);
+    }
+
 }

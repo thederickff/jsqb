@@ -18,11 +18,8 @@
  */
 package com.github.str4ng3r.core;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
+
 import org.junit.Test;
 
 import com.github.str4ng3r.Pagination;
@@ -37,8 +34,15 @@ public class TestPagination {
   public void testPagination() throws InvalidCurrentPageException, InvalidSqlGenerationException {
     Selector s = new Selector().select("test t");
     SqlParameter sql = s.getSqlAndParameters();
-    s.getPagination(sql, new Pagination(10, 2629, 1));
-
+    s.setPagination(sql, new Pagination(10, 2629, 1));
+    String exp = "SELECT * FROM test t LIMIT 0 OFFSET 10";
+    check(exp, sql.sql);
   }
 
+  private void check(String exp, String act) {
+    System.out.println("Exp: " + exp.toLowerCase());
+    System.out.println("Act: " + act.toLowerCase());
+
+    assertEquals(exp, act);
+  }
 }
