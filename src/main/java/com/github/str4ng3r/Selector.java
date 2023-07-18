@@ -142,9 +142,9 @@ public class Selector extends QueryBuilder<Selector> {
    * @return same object as pipe
    * @throws InvalidCurrentPageException
    */
-  public Selector getPagination(SqlParameter sqlParameter, Pagination pagination) throws InvalidCurrentPageException {
-    sqlParameter.p = pagination;
+  public Selector setPagination(SqlParameter sqlParameter, Pagination pagination) throws InvalidCurrentPageException {
     pagination.calculatePagination(sqlParameter, constants, parameter);
+    sqlParameter.p = pagination;
     return this;
   }
 
