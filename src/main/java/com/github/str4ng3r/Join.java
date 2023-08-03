@@ -24,7 +24,7 @@ package com.github.str4ng3r;
  */
 public final class Join {
   public static enum JOIN {
-    INNER(" INNER JOIN "), LEFT(" LEFT JOIN "), RIGHT(" RIGHT JOIN ");
+    INNER(" INNER JOIN "), LEFT(" LEFT JOIN "), RIGHT(" RIGHT JOIN "), CROSS(" CROSS JOIN ");
 
     public String joinOpt;
 

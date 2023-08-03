@@ -134,4 +134,18 @@ abstract class QueryBuilder<T> {
     return t;
   }
 
+  /**
+   * Add cross join to statement
+   *
+   * @param join      An valid enum of join types
+   * @param tableName A source to join could be a query or table
+   * @param on        Login to join tables
+   *
+   * @return same object as pipe
+   */
+  public T crossJoin(String tableName) {
+    tables.addJoin(JOIN.CROSS, tableName, "");
+    return t;
+  }
+
 }

@@ -103,6 +103,7 @@ public class SelectorTest {
 
     SqlParameter sql = baseQueryPaginated(baseQuery(), startDate, gaId, endDate, null, null);
     String exp = "SELECT last_name, first_name, age, a.startDateFROM table_a LEFT JOIN table_b as b ON table_b.a = table_a.b INNER JOIN table_c as c ON table_c.a = table_a.c RIGHT JOIN table_d as d ON table_d.a = table_c.a INNER JOIN group_account as ga ON ga.id = a.group_account_id WHERE table_a.a > ? AND table_b.b < 20 AND table_c.c > ? AND a.endDate = ? AND ga.id = ? AND a.startDate= ? GROUP BY a.a HAVING cRows > 1 AND cRows < 10 ORDER BY a.a DESC";
+    System.out.println(sql);
     check(sql.sql, exp);
     assertEquals(5, sql.paramaters.size());
   }
