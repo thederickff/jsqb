@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -73,14 +74,7 @@ public final class Parameter {
   }
 
   List<String> sortParameters(List<String> indexes) {
-    List<String> sortedParameters = new ArrayList<>();
-
-    indexes.stream().forEach(p -> {
-      if (this.parameters.containsKey(p))
-        sortedParameters.add(this.parameters.get(p));
-    });
-
-    return sortedParameters;
+    return indexes.stream().filter(p -> this.parameters.containsKey(p)).map((p) -> this.parameters.get(p)).collect(Collectors.toList());
   }
 
   /**
