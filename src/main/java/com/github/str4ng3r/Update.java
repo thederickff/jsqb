@@ -42,7 +42,7 @@ public class Update extends QueryBuilder<Update> {
   @Override
   protected String write() throws InvalidSqlGenerationException {
     if (this.where.listFilterCriteria.isEmpty())
-      throw new InvalidSqlGenerationException("It's dangerous to create an update without where");
+      throw new InvalidSqlGenerationException("It's dangerous to create an update without a where");
 
     if (this.columnsToExclude.stream().anyMatch(k -> parameter.parameters.containsKey(":" + k)))
       throw new InvalidSqlGenerationException("Can not update a column from database");
