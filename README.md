@@ -149,7 +149,7 @@ Pablo Eduardo Martinez Solis
 
 <a name="block5"></a>
 ## 5. License [↑](#index_block)
-Java SQL Query Builder is licensed under the Apache license.
+Java SQL Query Builder is licensed under the GPLv3 license.
 
 ```
 The GPLv3 License (GPLv3)
