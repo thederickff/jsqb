@@ -2,10 +2,45 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
+  <licenses>
+    <license>
+      <name>GNU GPL v3</name>
+      <url>https://opensource.org/license/lgpl-3-0/</url>
+    </license>
+  </licenses>
+
+	<scm>
+		<connection>scm:git:https://github.com/STR4NG3R/querybuilder4j</connection>
+		<developerConnection>scm:git:ssh://git@github.com:STR4NG3R/querybuilder4j.git</developerConnection>
+		<url>https://github.com/STR4NG3R/querybuilder4j</url>
+		<tag>v@{project.version}</tag>
+	</scm>
+
+	<developers>
+		<developer>
+			<name>Pablo Eduardo Martinez Solis</name>
+			<email>pablo980629@hotmail.com</email>
+		</developer>
+	</developers>
+
+
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.str4ng3r</groupId>
   <artifactId>QueryBuilder</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.2</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
