@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.str4ng3r.core;
+package io.github.str4ng3r.core;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.github.str4ng3r.Pagination;
-import com.github.str4ng3r.Selector;
-import com.github.str4ng3r.SqlParameter;
-import com.github.str4ng3r.exceptions.InvalidCurrentPageException;
-import com.github.str4ng3r.exceptions.InvalidSqlGenerationException;
+import io.github.str4ng3r.Pagination;
+import io.github.str4ng3r.Selector;
+import io.github.str4ng3r.SqlParameter;
+import io.github.str4ng3r.exceptions.InvalidCurrentPageException;
+import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
 
 public class TestPagination {
 

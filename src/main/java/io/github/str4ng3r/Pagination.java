@@ -1,7 +1,7 @@
-package com.github.str4ng3r;
+package io.github.str4ng3r;
 
-import com.github.str4ng3r.Constants.SqlDialect;
-import com.github.str4ng3r.exceptions.InvalidCurrentPageException;
+import io.github.str4ng3r.Constants.SqlDialect;
+import io.github.str4ng3r.exceptions.InvalidCurrentPageException;
 
 public class Pagination {
   Integer pageSize;

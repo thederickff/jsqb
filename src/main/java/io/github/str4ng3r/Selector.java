@@ -16,14 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.str4ng3r;
+package io.github.str4ng3r;
 
-import com.github.str4ng3r.Tables.ACTIONSQL;
-import com.github.str4ng3r.exceptions.InvalidCurrentPageException;
-import com.github.str4ng3r.exceptions.InvalidSqlGenerationException;
+import io.github.str4ng3r.exceptions.InvalidCurrentPageException;
+
+import io.github.str4ng3r.Tables.ACTIONSQL;
+import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
 
 /**
- *
+ * A class that handles select statements
  * @author Pablo Eduardo Martinez Solis
  */
 public class Selector extends QueryBuilder<Selector> {
@@ -136,8 +137,8 @@ public class Selector extends QueryBuilder<Selector> {
   /**
    * Return a querybuilder with pagination
    *
-   * @param criteria
-   * @param parameters
+   * @param sqlParameter
+   * @param pagination
    *
    * @return same object as pipe
    * @throws InvalidCurrentPageException

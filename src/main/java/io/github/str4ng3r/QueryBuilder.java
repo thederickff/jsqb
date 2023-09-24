@@ -17,13 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.str4ng3r;
+package io.github.str4ng3r;
 
 import java.util.List;
 
-import com.github.str4ng3r.Constants.SqlDialect;
-import com.github.str4ng3r.Join.JOIN;
-import com.github.str4ng3r.exceptions.InvalidSqlGenerationException;
+import io.github.str4ng3r.Constants.SqlDialect;
+
+import io.github.str4ng3r.Join.JOIN;
+import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
 
 /**
  *
@@ -61,7 +62,7 @@ abstract class QueryBuilder<T> {
    *
    * @return Sql
    *
-   * @throws InvalidSqlGeneration
+   * @throws InvalidSqlGenerationException
    */
   abstract protected String write() throws InvalidSqlGenerationException;
 
@@ -69,7 +70,7 @@ abstract class QueryBuilder<T> {
    * Generate SQL Statement with paramaters
    *
    * @return SqlParameter
-   * @throws InvalidSqlGeneration
+   * @throws InvalidSqlGenerationException 
    */
   public SqlParameter getSqlAndParameters() throws InvalidSqlGenerationException {
     String sql = this.write();
@@ -137,9 +138,7 @@ abstract class QueryBuilder<T> {
   /**
    * Add cross join to statement
    *
-   * @param join      An valid enum of join types
    * @param tableName A source to join could be a query or table
-   * @param on        Login to join tables
    *
    * @return same object as pipe
    */

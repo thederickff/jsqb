@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.str4ng3r;
+package io.github.str4ng3r;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import com.github.str4ng3r.Join.JOIN;
-import com.github.str4ng3r.exceptions.InvalidCurrentPageException;
-import com.github.str4ng3r.exceptions.InvalidSqlGenerationException;
+import io.github.str4ng3r.Join.JOIN;
+import io.github.str4ng3r.exceptions.InvalidCurrentPageException;
+import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
 
 /**
  *

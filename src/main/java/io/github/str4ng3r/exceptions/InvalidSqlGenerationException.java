@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.str4ng3r.exceptions;
+package io.github.str4ng3r.exceptions;
 
-public class InvalidCurrentPageException extends Exception {
-  public InvalidCurrentPageException(String error) {
+public class InvalidSqlGenerationException extends Exception {
+  public InvalidSqlGenerationException(String error) {
     super(error);
   }
 }

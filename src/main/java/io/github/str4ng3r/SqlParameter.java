@@ -16,10 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.str4ng3r.exceptions;
+package io.github.str4ng3r;
 
-public class InvalidSqlGenerationException extends Exception {
-  public InvalidSqlGenerationException(String error) {
-    super(error);
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * @author Pablo Eduardo Martinez Solis
+ */
+public class SqlParameter {
+  public String sql;
+  public List<String> paramaters = new ArrayList<>();
+  protected Pagination p = null;
+
+  SqlParameter(String sql, List<String> paramaters) {
+    this.sql = sql;
+    this.paramaters = paramaters;
+  }
+
+  @Override
+  public String toString() {
+    String query = "{\n\tsql: \"" + this.sql + "\",\n\tparameters: " + this.paramaters;
+    if (p != null)
+      query += ",\n\tpagination: " + p;
+    return query + "\n}";
   }
 }

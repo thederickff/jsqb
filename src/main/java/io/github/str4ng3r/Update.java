@@ -1,10 +1,10 @@
-package com.github.str4ng3r;
+package io.github.str4ng3r;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.github.str4ng3r.Tables.ACTIONSQL;
-import com.github.str4ng3r.exceptions.InvalidSqlGenerationException;
+import io.github.str4ng3r.Tables.ACTIONSQL;
+import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
 
 public class Update extends QueryBuilder<Update> {
 
@@ -29,8 +29,7 @@ public class Update extends QueryBuilder<Update> {
   /**
    * This should init from
    * 
-   * @param criteria
-   * @param parameters
+   * @param tableNames an array of tables
    *
    * @return same object as pipe
    */
