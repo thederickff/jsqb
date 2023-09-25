@@ -103,7 +103,7 @@
   </build>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.str4ng3r</groupId>
+  <groupId>io.github.str4ng3r</groupId>
   <artifactId>QueryBuilder</artifactId>
   <version>1.0.2-SNAPSHOT</version>
   <name>${project.groupId}:${project.artifactId}</name>
