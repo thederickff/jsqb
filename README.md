@@ -36,13 +36,13 @@ Step 1. Add the JitPack repository to your build file
 </repositories>
 ```
 Step 2. Add the dependency
-
-	<dependency>
-	    <groupId>com.github.STR4NG3R</groupId>
-	    <artifactId>querybuilder4j</artifactId>
-	    <version>1.0.2</version>
-	</dependency>
-
+```xml
+<dependency>
+    <groupId>com.github.STR4NG3R</groupId>
+    <artifactId>querybuilder4j</artifactId>
+    <version>1.0.2</version>
+</dependency>
+```
 
 
 <a name="block2"></a>
