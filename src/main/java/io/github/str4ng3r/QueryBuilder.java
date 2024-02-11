@@ -53,10 +53,6 @@ abstract class QueryBuilder<T> {
     return this.parameter.addParameter(column, value);
   }
 
-  public Parameter addParameter(String column, String value, boolean b) {
-    return this.parameter.addParameter(column, value, b);
-  }
-
   /**
    * Build query
    *
@@ -67,7 +63,7 @@ abstract class QueryBuilder<T> {
   abstract protected String write() throws InvalidSqlGenerationException;
 
   /**
-   * Generate SQL Statement with paramaters
+   * Generate SQL Statement with paramaters as an array
    *
    * @return SqlParameter
    * @throws InvalidSqlGenerationException 
@@ -79,6 +75,17 @@ abstract class QueryBuilder<T> {
     sql = parameter.replaceParamatersOnSql(sql);
 
     return new SqlParameter(sql, orderParameters);
+  }
+
+  /**
+   * Generate SQL Statement with paramaters as an dictionary (this is a little bit more fast)
+   *
+   * @return SqlParameter
+   * @throws InvalidSqlGenerationException 
+   */
+  public SqlParameter getSqlAndParametersDictionarie() throws InvalidSqlGenerationException {
+    String sql = this.write();
+    return new SqlParameter(sql, parameter.parameters);
   }
 
   /**

@@ -39,13 +39,6 @@ public final class Parameter {
     return this;
   }
 
-  public Parameter addParameter(String column, String value, boolean b) {
-    if (b)
-      value = "\"" + value + "\"";
-    this.parameters.put(":" + column, value);
-    return this;
-  }
-
   public List<String> getIndexesOfOcurrences(String sql) {
     List<String> indexes = new ArrayList<>();
     Matcher m = Parameter.pattern.matcher(sql);

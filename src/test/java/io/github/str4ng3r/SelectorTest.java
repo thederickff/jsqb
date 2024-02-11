@@ -35,14 +35,14 @@ public class SelectorTest {
       Integer pageSize) throws InvalidCurrentPageException, InvalidSqlGenerationException {
     if (endDate != null)
       selector.addSelect("a.startDate")
-          .andWhere("a.endDate = :endDate", selector.addParameter("endDate", endDate, true));
+          .andWhere("a.endDate = :endDate", selector.addParameter("endDate", endDate));
 
     if (gaId != null)
       selector.join(JOIN.INNER, "group_account as ga", "ga.id = a.group_account_id")
           .andWhere("ga.id = :gaId", selector.addParameter("gaId", gaId));
 
     if (startDate != null)
-      selector.andWhere("a.startDate= :startDate", selector.addParameter("startDate", startDate, true));
+      selector.andWhere("a.startDate= :startDate", selector.addParameter("startDate", startDate));
 
     if (page != null && pageSize != null) {
       SqlParameter sql = selector.getSqlAndParameters();
@@ -105,7 +105,7 @@ public class SelectorTest {
     String exp = "SELECT last_name, first_name, age, a.startDateFROM table_a LEFT JOIN table_b as b ON table_b.a = table_a.b INNER JOIN table_c as c ON table_c.a = table_a.c RIGHT JOIN table_d as d ON table_d.a = table_c.a INNER JOIN group_account as ga ON ga.id = a.group_account_id WHERE table_a.a > ? AND table_b.b < 20 AND table_c.c > ? AND a.endDate = ? AND ga.id = ? AND a.startDate= ? GROUP BY a.a HAVING cRows > 1 AND cRows < 10 ORDER BY a.a DESC";
     System.out.println(sql);
     check(sql.sql, exp);
-    assertEquals(5, sql.paramaters.size());
+    assertEquals(5, sql.listParamaters.size());
   }
 
   @Test
@@ -117,7 +117,7 @@ public class SelectorTest {
 
     String exp = "SELECT last_name, first_name, age, a.startDateFROM table_a LEFT JOIN table_b as b ON table_b.a = table_a.b INNER JOIN table_c as c ON table_c.a = table_a.c RIGHT JOIN table_d as d ON table_d.a = table_c.a INNER JOIN group_account as ga ON ga.id = a.group_account_id WHERE table_a.a > ? AND table_b.b < 20 AND table_c.c > ? AND a.endDate = ? AND ga.id = ? AND a.startDate= ? GROUP BY a.a HAVING cRows > 1 AND cRows < 10 ORDER BY a.a DESC OFFSET 180 ROWS FETCH NEXT 20 ROWS ONLY";
     check(exp, sql.sql);
-    assertEquals(5, sql.paramaters.size());
+    assertEquals(5, sql.listParamaters.size());
   }
 
   @Test
@@ -126,7 +126,7 @@ public class SelectorTest {
     String exp = "SELECT * FROM holidays ORDER BY date_of_holiday DESC";
 
     check(exp, act.sql);
-    assertEquals(0, act.paramaters.size());
+    assertEquals(0, act.listParamaters.size());
   }
 
   private void check(String exp, String act) {
