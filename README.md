@@ -29,20 +29,20 @@ To install with maven
 Step 1. Add the JitPack repository to your build file
 ```xml
 <repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
 ```
 Step 2. Add the dependency
-
-	<dependency>
-	    <groupId>com.github.STR4NG3R</groupId>
-	    <artifactId>querybuilder4j</artifactId>
-	    <version>1.0.2</version>
-	</dependency>
-
+```xml
+<dependency>
+    <groupId>com.github.STR4NG3R</groupId>
+    <artifactId>querybuilder4j</artifactId>
+    <version>1.0.2</version>
+</dependency>
+```
 
 
 <a name="block2"></a>
@@ -131,8 +131,8 @@ This method is described as:
 public class Usage {
     public static void main(String[] args)
     {
-        Jsqb jsqb = new Jsqb();
-        String sql = jsqb.select("users as u", "id", "name", "email")
+        Selector selector = new Selector();
+        String sql = selector.select("users as u", "id", "name", "email")
                              .join(JOIN.INNER, "roles as r", "r.id = u.role_id")
                              .addSelect("r.name", "r.id", "r.level")
                              .join(JOIN.RIGHT, "address as a", "a.user_id = u.id")
