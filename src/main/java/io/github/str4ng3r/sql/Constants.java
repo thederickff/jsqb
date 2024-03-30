@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.str4ng3r;
+package io.github.str4ng3r.sql;
 
 import java.util.HashMap;
 
@@ -38,23 +38,34 @@ public class Constants {
   }
 
   public static enum Actions {
-    SEPARATOR, PAGINATION;
+    SEPARATOR, PAGINATION, CREATEPK;
   };
 
   private String sqlDialect = SqlDialect.Sql.sqlDialect;
 
-  Constants() {
+  public Constants() {
     if (!dialectConstants.isEmpty())
       return;
-    dialectConstants.put(SqlDialect.Sql.sqlDialect + Constants.Actions.SEPARATOR, "");
-    dialectConstants.put(Constants.SqlDialect.Postgres.sqlDialect + Constants.Actions.SEPARATOR, "`");
-    dialectConstants.put(Constants.SqlDialect.Oracle.sqlDialect + Constants.Actions.PAGINATION,
+    //SQL
+    dialectConstants.put(calculatedKey(SqlDialect.Sql.sqlDialect, Constants.Actions.SEPARATOR), "");
+    dialectConstants.put(calculatedKey(Constants.SqlDialect.Postgres.sqlDialect, Constants.Actions.SEPARATOR), "`");
+    dialectConstants.put(calculatedKey(Constants.SqlDialect.Oracle.sqlDialect, Constants.Actions.PAGINATION),
         " OFFSET :low ROWS FETCH NEXT :upper ROWS ONLY");
-    dialectConstants.put(Constants.SqlDialect.Mysql.sqlDialect + Constants.Actions.PAGINATION,
+    dialectConstants.put(calculatedKey(Constants.SqlDialect.Mysql.sqlDialect, Constants.Actions.PAGINATION),
         " LIMIT :low, :upper");
-    dialectConstants.put(Constants.SqlDialect.Sql.sqlDialect + Constants.Actions.PAGINATION,
+    dialectConstants.put(calculatedKey(Constants.SqlDialect.Sql.sqlDialect, Constants.Actions.PAGINATION),
         " LIMIT :low OFFSET :upper");
+    //DDL
+    dialectConstants.put(calculatedKey(Constants.SqlDialect.Mysql.sqlDialect, Constants.Actions.CREATEPK),
+        " PRIMARY_KEY( :name ) ");
+    dialectConstants.put(calculatedKey(Constants.SqlDialect.Postgres.sqlDialect, Constants.Actions.CREATEPK),
+        " PRIMARY_KEY( :names ) ");
+    dialectConstants.put(calculatedKey(Constants.SqlDialect.Mysql.sqlDialect, Constants.Actions.CREATEPK),
+        " IDENTITY(1, 1) PRIMARY KEY");
+
   }
+
+  private String calculatedKey(String dialect, Actions pagination) {return dialect + "," + pagination;}
 
   public void setDialect(SqlDialect sql) {
     sqlDialect = sql.sqlDialect;
@@ -65,10 +76,14 @@ public class Constants {
   }
 
   public String getAction(Actions action) {
-    String k = sqlDialect + action;
+    String k = calculatedKey(sqlDialect, action);
     if (dialectConstants.containsKey(k))
       return dialectConstants.get(k);
 
     return dialectConstants.get(SqlDialect.Sql.sqlDialect + action);
+  }
+  
+  public String replaceValues(String action, String ...values){
+    return Parameter.setParameter(action, values);
   }
 }

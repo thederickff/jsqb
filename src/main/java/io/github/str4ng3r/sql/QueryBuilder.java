@@ -17,14 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.str4ng3r;
+package io.github.str4ng3r.sql;
 
 import java.util.List;
 
-import io.github.str4ng3r.Constants.SqlDialect;
-
-import io.github.str4ng3r.Join.JOIN;
 import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
+import io.github.str4ng3r.sql.Constants.SqlDialect;
+import io.github.str4ng3r.sql.Join.JOIN;
 
 /**
  *

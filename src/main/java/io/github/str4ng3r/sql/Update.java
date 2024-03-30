@@ -1,10 +1,10 @@
-package io.github.str4ng3r;
+package io.github.str4ng3r.sql;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import io.github.str4ng3r.Tables.ACTIONSQL;
 import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
+import io.github.str4ng3r.sql.Tables.ACTIONSQL;
 
 public class Update extends QueryBuilder<Update> {
 

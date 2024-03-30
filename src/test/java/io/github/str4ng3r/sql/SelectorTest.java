@@ -16,14 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.str4ng3r;
+package io.github.str4ng3r.sql;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import io.github.str4ng3r.Join.JOIN;
 import io.github.str4ng3r.exceptions.InvalidCurrentPageException;
 import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
+import io.github.str4ng3r.sql.Constants;
+import io.github.str4ng3r.sql.Delete;
+import io.github.str4ng3r.sql.Pagination;
+import io.github.str4ng3r.sql.Selector;
+import io.github.str4ng3r.sql.SqlParameter;
+import io.github.str4ng3r.sql.Update;
+import io.github.str4ng3r.sql.Join.JOIN;
 
 /**
  *
@@ -105,7 +111,7 @@ public class SelectorTest {
     String exp = "SELECT last_name, first_name, age, a.startDateFROM table_a LEFT JOIN table_b as b ON table_b.a = table_a.b INNER JOIN table_c as c ON table_c.a = table_a.c RIGHT JOIN table_d as d ON table_d.a = table_c.a INNER JOIN group_account as ga ON ga.id = a.group_account_id WHERE table_a.a > ? AND table_b.b < 20 AND table_c.c > ? AND a.endDate = ? AND ga.id = ? AND a.startDate= ? GROUP BY a.a HAVING cRows > 1 AND cRows < 10 ORDER BY a.a DESC";
     System.out.println(sql);
     check(sql.sql, exp);
-    assertEquals(5, sql.listParamaters.size());
+    assertEquals(5, sql.getListParameters().size());
   }
 
   @Test
@@ -117,7 +123,7 @@ public class SelectorTest {
 
     String exp = "SELECT last_name, first_name, age, a.startDateFROM table_a LEFT JOIN table_b as b ON table_b.a = table_a.b INNER JOIN table_c as c ON table_c.a = table_a.c RIGHT JOIN table_d as d ON table_d.a = table_c.a INNER JOIN group_account as ga ON ga.id = a.group_account_id WHERE table_a.a > ? AND table_b.b < 20 AND table_c.c > ? AND a.endDate = ? AND ga.id = ? AND a.startDate= ? GROUP BY a.a HAVING cRows > 1 AND cRows < 10 ORDER BY a.a DESC OFFSET 180 ROWS FETCH NEXT 20 ROWS ONLY";
     check(exp, sql.sql);
-    assertEquals(5, sql.listParamaters.size());
+    assertEquals(5, sql.getListParameters().size());
   }
 
   @Test
@@ -126,7 +132,7 @@ public class SelectorTest {
     String exp = "SELECT * FROM holidays ORDER BY date_of_holiday DESC";
 
     check(exp, act.sql);
-    assertEquals(0, act.listParamaters.size());
+    assertEquals(0, act.getListParameters().size());
   }
 
   private void check(String exp, String act) {

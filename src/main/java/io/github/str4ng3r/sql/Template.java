@@ -1,4 +1,4 @@
-package io.github.str4ng3r;
+package io.github.str4ng3r.sql;
 
 public class Template<T> extends Pagination {
     T data;

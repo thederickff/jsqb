@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.str4ng3r;
+package io.github.str4ng3r.sql;
 
-import io.github.str4ng3r.Tables.ACTIONSQL;
 import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
+import io.github.str4ng3r.sql.Tables.ACTIONSQL;
 
 /**
  *

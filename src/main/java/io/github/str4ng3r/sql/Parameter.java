@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.str4ng3r;
+package io.github.str4ng3r.sql;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public final class Parameter {
     return sql.replaceAll(p, "?");
   }
 
-  String setParameter(String sql, String... parameters) {
+  static String setParameter(String sql, String... parameters) {
     Matcher m = Parameter.pattern.matcher(sql);
     int c = 0, groupPosition = 1;
     StringBuffer sb = new StringBuffer();
