@@ -24,13 +24,13 @@ import io.github.str4ng3r.sql.Tables.ACTIONSQL;
 
 /**
  * A class that handles select statements
+ * 
  * @author Pablo Eduardo Martinez Solis
  */
 public class Selector extends QueryBuilder<Selector> {
 
-  private OrderGroupBy orderBy = new OrderGroupBy();
-  private OrderGroupBy groupBy = new OrderGroupBy();
-
+  private OrderGroupBy orderBy;
+  private OrderGroupBy groupBy;
   private WhereHaving having;
 
   public Selector() {
@@ -41,7 +41,6 @@ public class Selector extends QueryBuilder<Selector> {
 
   private void initialize() {
     this.tables = new Tables(ACTIONSQL.SELECT);
-    this.having = new WhereHaving(" HAVING ", this.parameter);
     this.orderBy = null;
     this.groupBy = null;
   }
@@ -80,7 +79,8 @@ public class Selector extends QueryBuilder<Selector> {
    * @return same object as pipe
    */
   public Selector orderBy(String orderBy, boolean descending) {
-    this.orderBy = new OrderGroupBy();
+    if (this.orderBy == null)
+      this.orderBy = new OrderGroupBy();
     this.orderBy.orderBy(orderBy, descending);
     return this;
   }
@@ -109,6 +109,8 @@ public class Selector extends QueryBuilder<Selector> {
    * @return same object as pipe
    */
   public Selector having(String criteria, Parameter... parameters) {
+    if (this.having == null)
+      this.having = new WhereHaving(" HAVING ", this.parameter);
     this.having.addCriteria(criteria, parameters);
     return this;
   }
@@ -122,6 +124,8 @@ public class Selector extends QueryBuilder<Selector> {
    * @return same object as pipe
    */
   public Selector andHaving(String criteria, Parameter... parameters) {
+    if (this.having == null)
+      this.having = new WhereHaving(" HAVING ", this.parameter);
     this.having.andAddCriteria(criteria, parameters);
     return this;
   }
