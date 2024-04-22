@@ -43,6 +43,7 @@ public class Selector extends QueryBuilder<Selector> {
     this.tables = new Tables(ACTIONSQL.SELECT);
     this.orderBy = null;
     this.groupBy = null;
+    this.having = null;
   }
 
   /**
