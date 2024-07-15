@@ -32,17 +32,11 @@ import io.github.str4ng3r.sql.Join.JOIN;
 abstract class QueryBuilder<T> {
   protected Constants constants = new Constants();
   protected Parameter parameter = new Parameter();
-  protected WhereHaving where;
+  protected WhereHaving where = new WhereHaving(" WHERE ", this.parameter);
   protected Tables tables;
   protected T t;
 
-  QueryBuilder() {
-    initialize();
-  }
-
-  private void initialize() {
-    this.where = new WhereHaving(" WHERE ", this.parameter);
-  }
+  QueryBuilder() {}
 
   protected void setReferenceObject(T t) {
     this.t = t;
@@ -153,4 +147,15 @@ abstract class QueryBuilder<T> {
     return t;
   }
 
+  /**
+   * Add table
+   *
+   * @param tableName A source to join could be a query or table
+   *
+   * @return same object as pipe
+   */
+  public T addFrom(String tableName) {
+    tables.from(tableName);
+    return t;
+  }
 }
