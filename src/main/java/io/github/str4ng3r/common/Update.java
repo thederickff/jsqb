@@ -1,10 +1,11 @@
-package io.github.str4ng3r.sql;
+package io.github.str4ng3r.common;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
-import io.github.str4ng3r.sql.Tables.ACTIONSQL;
+import io.github.str4ng3r.common.Tables.ACTIONSQL;
 
 public class Update extends QueryBuilder<Update> {
 
@@ -21,8 +22,7 @@ public class Update extends QueryBuilder<Update> {
   }
 
   public Update excludeColumns(String... columnsToExclude) {
-    for (String column : columnsToExclude)
-      this.columnsToExclude.add(column);
+    Collections.addAll(this.columnsToExclude, columnsToExclude);
     return this;
   }
 

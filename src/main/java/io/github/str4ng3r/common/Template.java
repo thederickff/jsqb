@@ -1,4 +1,4 @@
-package io.github.str4ng3r.sql;
+package io.github.str4ng3r.common;
 
 public class Template<T> extends Pagination {
     T data;
@@ -14,5 +14,12 @@ public class Template<T> extends Pagination {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        String t = super.toString().substring(1);
+        t = "{\n\tdata: " + data + "," + t;
+        return t;
     }
 }

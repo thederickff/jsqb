@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.str4ng3r.sql;
+package io.github.str4ng3r.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,11 +28,11 @@ import java.util.List;
  */
 public class SqlParameter {
   public String sql;
-  List<String> listParamaters = new ArrayList<>();
+  List<Object> listParamaters = new ArrayList<>();
   HashMap<String, String> dictionarieParameters;
   protected Pagination p = null;
 
-  SqlParameter(String sql, List<String> parameter) {
+  SqlParameter(String sql, List<Object> parameter) {
     this.sql = sql;
     this.listParamaters = parameter;
   }
@@ -42,7 +42,7 @@ public class SqlParameter {
     this.dictionarieParameters = parameters;
   }
 
-  public List<String> getListParameters(){
+  public List<Object> getListParameters(){
     return this.listParamaters;
   }
   

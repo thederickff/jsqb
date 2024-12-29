@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.str4ng3r.sql;
+package io.github.str4ng3r.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
-import io.github.str4ng3r.sql.Join.JOIN;
+import io.github.str4ng3r.common.Join.JOIN;
 
 /**
  *
@@ -71,8 +71,7 @@ class Tables {
   }
 
   private void addSeparator(List<String> list, StringBuilder sql) {
-    sql.append(
-        list.stream().map(f -> f).collect(Collectors.joining(", ")));
+    sql.append(String.join(", ", list).concat(" "));
   }
 
   private void addSeparatorTables(List<Table> list, StringBuilder sql) {
@@ -96,14 +95,13 @@ class Tables {
     } else if (this.action == ACTIONSQL.DELETE) {
       addSeparatorTables(tables, sql);
       sql.append("FROM ");
-    }
-
-    sql.append(tables.get(0).name);
-
-    if (this.action == ACTIONSQL.UPDATE) {
+    } else if (this.action == ACTIONSQL.UPDATE) {
+      sql.append(tables.get(0).name);
       sql.append(" SET ");
       addSeparator(fields, sql);
     }
+
+    sql.append(tables.get(0).name);
 
     for (int i = 1; i < tables.size(); i++) {
       Table table = tables.get(i);

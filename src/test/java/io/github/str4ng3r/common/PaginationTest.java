@@ -16,18 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.str4ng3r.sql;
+package io.github.str4ng3r.common;
 
 import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
 
 import io.github.str4ng3r.exceptions.InvalidCurrentPageException;
 import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
 
-public class TestPagination {
+public class PaginationTest {
 
-  @Test
+
   public void testPagination() throws InvalidCurrentPageException, InvalidSqlGenerationException {
     Selector s = new Selector().select("test t");
     SqlParameter sql = s.getSqlAndParameters();

@@ -16,11 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.str4ng3r.sql;
+package io.github.str4ng3r.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -29,37 +33,35 @@ import java.util.regex.Matcher;
 final class WhereHaving {
 
   protected List<String> listFilterCriteria = new ArrayList<>();
-  private boolean firstCriteria;
   private String prefix;
   private Parameter parameter;
 
   WhereHaving(String prefix, Parameter parameter) {
     this.prefix = prefix;
     this.parameter = parameter;
-    this.firstCriteria = true;
   }
 
-  public void addCriteria(String criteria, Parameter... parameters) {
-    if (!this.firstCriteria) {
-      List<String> parameterToRemove = getParametersMatch();
-      parameter.filterParameter(parameterToRemove);
-      this.firstCriteria = true;
-    }
-    this.firstCriteria = false;
+  public void removeAllCriterias() {
+    List<String> parameterToRemove = getParametersMatch();
+    parameter.filterParameter(parameterToRemove);
+  }
+
+  public void addCriteria(String criteria, Consumer<HashMap<String, String>> parameters) {
+    removeAllCriterias();
+    parameters.accept(this.parameter.parameters);
     this.listFilterCriteria.add(criteria);
   }
 
-  public void andAddCriteria(String criteria, Parameter... parameters) {
-    String c = this.firstCriteria ? criteria : " AND " + criteria;
-    this.listFilterCriteria.add(c);
-    this.firstCriteria = false;
+  public void andAddCriteria(String criteria, Consumer<HashMap<String, String>> parameters) {
+    this.listFilterCriteria.add(criteria);
+    parameters.accept(this.parameter.parameters);
   }
 
   public StringBuilder write(StringBuilder sql) {
     if (listFilterCriteria.isEmpty())
       return sql;
     sql.append(prefix);
-    listFilterCriteria.forEach(w -> sql.append(w));
+    sql.append(String.join(" AND ", listFilterCriteria));
     return sql;
   }
 

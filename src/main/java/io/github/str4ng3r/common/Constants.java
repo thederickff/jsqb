@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.str4ng3r.sql;
+package io.github.str4ng3r.common;
 
 import java.util.HashMap;
 
@@ -27,7 +27,7 @@ import java.util.HashMap;
 public class Constants {
   public static HashMap<String, String> dialectConstants = new HashMap<>();
 
-  public static enum SqlDialect {
+  public enum SqlDialect {
     Mysql("MySQL"), Oracle("Oracle"), Postgres("Postgres"), Sql("SQL");
 
     public String sqlDialect;
@@ -37,7 +37,7 @@ public class Constants {
     }
   }
 
-  public static enum Actions {
+  public enum Actions {
     SEPARATOR, PAGINATION, CREATEPK;
   };
 
@@ -55,6 +55,8 @@ public class Constants {
         " LIMIT :low, :upper");
     dialectConstants.put(calculatedKey(Constants.SqlDialect.Sql.sqlDialect, Constants.Actions.PAGINATION),
         " LIMIT :low OFFSET :upper");
+    dialectConstants.put(calculatedKey(Constants.SqlDialect.Postgres.sqlDialect, Constants.Actions.PAGINATION),
+            " LIMIT :low OFFSET :upper");
     //DDL
     dialectConstants.put(calculatedKey(Constants.SqlDialect.Mysql.sqlDialect, Constants.Actions.CREATEPK),
         " PRIMARY_KEY( :name ) ");
@@ -80,7 +82,7 @@ public class Constants {
     if (dialectConstants.containsKey(k))
       return dialectConstants.get(k);
 
-    return dialectConstants.get(SqlDialect.Sql.sqlDialect + action);
+    return dialectConstants.get(calculatedKey(SqlDialect.Sql.sqlDialect, action));
   }
   
   public String replaceValues(String action, String ...values){

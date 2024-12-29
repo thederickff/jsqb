@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.github.str4ng3r.sql;
+package io.github.str4ng3r.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,26 +29,34 @@ import java.util.stream.Collectors;
  *
  * @author Pablo Eduardo Martinez Solis
  */
-public final class Parameter {
-  public static String p = "(:[a-zA-Z0-9\\.]+)";
+final class Parameter {
+  public static String p = "(:[a-zA-Z0-9]+)";
   public static Pattern pattern = Pattern.compile(p);
   protected HashMap<String, String> parameters = new HashMap<>();
 
+  private String sql;
+
   public Parameter addParameter(String column, String value) {
-    this.parameters.put(":" + column, value);
+    this.parameters.put(column, value);
     return this;
   }
 
-  public List<String> getIndexesOfOcurrences(String sql) {
+  public List<String> getIndexesOfOccurrences(String sql) {
     List<String> indexes = new ArrayList<>();
     Matcher m = Parameter.pattern.matcher(sql);
-    while (m.find())
-      indexes.add(m.group());
+    StringBuffer result = new StringBuffer();
+
+    while (m.find()){
+      indexes.add(m.group().substring(1));
+      m.appendReplacement(result, "?");
+    }
+    m.appendTail(result);
+    this.sql = result.toString();
     return indexes;
   }
 
-  String replaceParamatersOnSql(String sql) {
-    return sql.replaceAll(p, "?");
+  public String getSql() {
+    return sql;
   }
 
   static String setParameter(String sql, String... parameters) {
@@ -57,7 +65,7 @@ public final class Parameter {
     StringBuffer sb = new StringBuffer();
 
     while (m.find() && c < parameters.length) {
-      StringBuffer buf = new StringBuffer(m.group());
+      StringBuilder buf = new StringBuilder(m.group());
       buf.replace(m.start(groupPosition) - m.start(), m.end(groupPosition) - m.start(), parameters[c++]);
       m.appendReplacement(sb, buf.toString());
     }
@@ -66,7 +74,7 @@ public final class Parameter {
     return sb.toString();
   }
 
-  List<String> sortParameters(List<String> indexes) {
+  List<Object> sortParameters(List<String> indexes) {
     return indexes.stream().filter(p -> this.parameters.containsKey(p)).map((p) -> this.parameters.get(p)).collect(Collectors.toList());
   }
 
