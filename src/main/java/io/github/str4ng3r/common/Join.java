@@ -22,14 +22,12 @@ package io.github.str4ng3r.common;
  *
  * @author Pablo Eduardo Martinez Solis
  */
-public final class Join {
-  public static enum JOIN {
-    INNER(" INNER JOIN "), LEFT(" LEFT JOIN "), RIGHT(" RIGHT JOIN "), CROSS(" CROSS JOIN ");
+public enum Join {
+  INNER(" INNER JOIN "), LEFT(" LEFT JOIN "), RIGHT(" RIGHT JOIN "), CROSS(" CROSS JOIN ");
 
-    public String joinOpt;
+  public String joinOpt;
 
-    private JOIN(String joinOpt) {
-      this.joinOpt = joinOpt;
-    }
+  private Join(String joinOpt) {
+    this.joinOpt = joinOpt;
   }
 }

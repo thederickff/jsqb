@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
 import io.github.str4ng3r.common.Constants.SqlDialect;
-import io.github.str4ng3r.common.Join.JOIN;
 
 /**
  * @author Pablo Eduardo Martinez Solis
@@ -133,7 +132,7 @@ abstract class QueryBuilder<T> {
      * @param on        Login to join tables
      * @return same object as pipe
      */
-    public T join(JOIN join, String tableName, String on) {
+    public T join(Join join, String tableName, String on) {
         tables.addJoin(join, tableName, on);
         return t;
     }
@@ -145,7 +144,7 @@ abstract class QueryBuilder<T> {
      * @return same object as pipe
      */
     public T crossJoin(String tableName) {
-        tables.addJoin(JOIN.CROSS, tableName, "");
+        tables.addJoin(Join.CROSS, tableName, "");
         return t;
     }
 

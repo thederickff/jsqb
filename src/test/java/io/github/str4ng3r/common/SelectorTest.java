@@ -20,7 +20,7 @@ package io.github.str4ng3r.common;
 
 import io.github.str4ng3r.exceptions.InvalidCurrentPageException;
 import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
-import io.github.str4ng3r.common.Join.JOIN;
+import io.github.str4ng3r.common.Join;
 
 import java.util.function.Consumer;
 
@@ -56,8 +56,8 @@ public class SelectorTest {
                         "u.id id", "u.name name", "u.email email", "u.role role",
                         "u.email as email"
                 )
-                .join(JOIN.LEFT, "userAddress as ua", "u.id = ua.userId")
-                .join(JOIN.INNER, "addresses as a", "a.id = ua.addressId")
+                .join(Join.LEFT, "userAddress as ua", "u.id = ua.userId")
+                .join(Join.INNER, "addresses as a", "a.id = ua.addressId")
                 .setDialect(Constants.SqlDialect.Postgres);
 
         if (name != null)
@@ -75,8 +75,8 @@ public class SelectorTest {
     public static Selector baseQueryShops() {
         Selector s = new Selector();
         return s.select("user u", "u.id", "u.name", "u.email", "u.role ")
-                .join(JOIN.LEFT, "userShop as us", "u.id = us.userId")
-                .join(JOIN.INNER, "shops as s", "s.id = us.shopId")
+                .join(Join.LEFT, "userShop as us", "u.id = us.userId")
+                .join(Join.INNER, "shops as s", "s.id = us.shopId")
                 .setDialect(Constants.SqlDialect.Postgres);
     }
 
