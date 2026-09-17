@@ -26,7 +26,10 @@ class OrderGroupBy {
   String orderBy;
 
   public void orderBy(String orderBy, boolean descending) {
-    this.orderBy = descending ? orderBy + " DESC" : orderBy;
+    String column = descending ? orderBy + " DESC" : orderBy + " ASC";
+    this.orderBy = (this.orderBy == null || this.orderBy.isEmpty())
+        ? column
+        : this.orderBy + ", " + column;
   }
 
   public void groupBy(String groupBy) {

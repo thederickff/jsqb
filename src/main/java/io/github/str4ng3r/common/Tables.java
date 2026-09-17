@@ -21,10 +21,8 @@ package io.github.str4ng3r.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.github.str4ng3r.exceptions.InvalidSqlGenerationException;
-import io.github.str4ng3r.common.Join.JOIN;
 
 /**
  * @author Pablo Eduardo Martinez Solis
@@ -65,17 +63,12 @@ class Tables {
         this.addFields(fields);
     }
 
-    public void addJoin(JOIN join, String name, String on) {
+    public void addJoin(Join join, String name, String on) {
         this.tables.add(new Table(join.joinOpt, name, on));
     }
 
     private void addSeparator(List<String> list, StringBuilder sql) {
         sql.append(String.join(", ", list).concat(" "));
-    }
-
-    private void addSeparatorTables(List<Table> list, StringBuilder sql) {
-        sql.append(
-                list.stream().map(f -> f.name).collect(Collectors.joining(", ")));
     }
 
     public StringBuilder write() throws InvalidSqlGenerationException {
@@ -92,7 +85,7 @@ class Tables {
             sql.append(tables.get(0).name);
         } else if (this.action == ACTIONSQL.DELETE) {
             sql.append("FROM ");
-            addSeparatorTables(tables, sql);
+            sql.append(tables.get(0).name);
         } else if (this.action == ACTIONSQL.UPDATE) {
             sql.append(tables.get(0).name);
             sql.append(" SET ");

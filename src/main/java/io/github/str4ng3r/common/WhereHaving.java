@@ -48,13 +48,13 @@ final class WhereHaving {
 
   public void addCriteria(String criteria, Consumer<HashMap<String, Object>> parameters) {
     removeAllCriterias();
-    parameters.accept(this.parameter.parameters);
+    if (parameters != null) parameters.accept(this.parameter.parameters);
     this.listFilterCriteria.add(criteria);
   }
 
   public void andAddCriteria(String criteria, Consumer<HashMap<String, Object>> parameters) {
     this.listFilterCriteria.add(criteria);
-    parameters.accept(this.parameter.parameters);
+    if (parameters != null) parameters.accept(this.parameter.parameters);
   }
 
   public StringBuilder write(StringBuilder sql) {
@@ -69,8 +69,10 @@ final class WhereHaving {
     ArrayList<String> p = new ArrayList<String>();
     for (String w : listFilterCriteria) {
       Matcher m = Parameter.pattern.matcher(w);
-      if (m.find())
-        p.add(m.group(0));
+      // group(0) es ":name"; se remueve el ':' para que coincida con las
+      // claves almacenadas en el mapa de parámetros (que van sin ':').
+      while (m.find())
+        p.add(m.group(0).substring(1));
     }
     return p;
   }
