@@ -69,8 +69,8 @@ public class PostgresTest {
         interactWithDb((connection -> {
             try {
                 SqlParameter sqlParameter = SelectorTest.baseQueryUsers("o", null, null).getSqlAndParameters();
-                System.out.println(sqlParameter.sql);
-                PreparedStatement ps = connection.prepareStatement(sqlParameter.sql);
+                System.out.println(sqlParameter.getSql());
+                PreparedStatement ps = connection.prepareStatement(sqlParameter.getSql());
                 JDBCUtils.addParameters(ps, sqlParameter.getListParameters());
                 ResultSet rs = ps.executeQuery();
                 while(rs.next()) {
@@ -93,7 +93,7 @@ public class PostgresTest {
                 int count = JDBCUtils.getCount(connection, s, sqlParameter);
                 s.setPagination(sqlParameter, new Pagination(2, count, 1));
 
-                PreparedStatement ps = connection.prepareStatement(sqlParameter.sql);
+                PreparedStatement ps = connection.prepareStatement(sqlParameter.getSql());
                 JDBCUtils.addParameters(ps, sqlParameter.getListParameters());
                 ResultSet rs = ps.executeQuery();
 

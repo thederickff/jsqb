@@ -27,10 +27,10 @@ import java.util.List;
  * @author Pablo Eduardo Martinez Solis
  */
 public class SqlParameter {
-  public String sql;
-  List<Object> listParamaters = new ArrayList<>();
-  HashMap<String, Object> dictionarieParameters;
-  protected Pagination p = null;
+  private String sql;
+  private List<Object> listParamaters = new ArrayList<>();
+  private HashMap<String, Object> dictionarieParameters;
+  private Pagination p = null;
 
   SqlParameter(String sql, List<Object> parameter) {
     this.sql = sql;
@@ -42,11 +42,29 @@ public class SqlParameter {
     this.dictionarieParameters = parameters;
   }
 
-  public List<Object> getListParameters(){
+  public String getSql() {
+    return this.sql;
+  }
+
+  /** Package-private: only the builder pipeline may mutate the generated SQL. */
+  void setSql(String sql) {
+    this.sql = sql;
+  }
+
+  /** Package-private: pagination metadata is set internally by the builder. */
+  void setPagination(Pagination p) {
+    this.p = p;
+  }
+
+  Pagination getPagination() {
+    return this.p;
+  }
+
+  public List<Object> getListParameters() {
     return this.listParamaters;
   }
-  
-  public HashMap<String, Object> dictionarieParameters(){
+
+  public HashMap<String, Object> dictionarieParameters() {
     return this.dictionarieParameters;
   }
 

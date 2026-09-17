@@ -15,7 +15,7 @@ public class JDBCUtils {
 
 
     public static int getCount(Connection connection, Selector s, SqlParameter sqlParameter) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement(s.getCount(sqlParameter.sql));
+        PreparedStatement ps = connection.prepareStatement(s.getCount(sqlParameter.getSql()));
         addParameters(ps, sqlParameter.getListParameters());
         ResultSet rs = ps.executeQuery();
         if (rs.next())

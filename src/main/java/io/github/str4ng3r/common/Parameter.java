@@ -19,6 +19,7 @@
 package io.github.str4ng3r.common;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -46,8 +47,18 @@ final class Parameter {
         StringBuffer result = new StringBuffer();
 
         while (m.find()) {
-            indexes.add(m.group().substring(1));
-            m.appendReplacement(result, "?");
+            String key = m.group().substring(1);
+            Object value = parameters.get(key);
+            if (value instanceof Collection<?>) {
+                int size = ((Collection<?>) value).size();
+                // Agregar el nombre de clave una vez por cada elemento de la colección
+                for (int i = 0; i < size; i++) indexes.add(key);
+                String placeholders = String.join(",", java.util.Collections.nCopies(size, "?"));
+                m.appendReplacement(result, placeholders);
+            } else {
+                indexes.add(key);
+                m.appendReplacement(result, "?");
+            }
         }
         m.appendTail(result);
         this.sql = result.toString();
@@ -74,7 +85,23 @@ final class Parameter {
     }
 
     List<Object> sortParameters(List<String> indexes) {
-        return indexes.stream().filter(p -> this.parameters.containsKey(p)).map((p) -> this.parameters.get(p)).collect(Collectors.toList());
+        // Usamos un Set de claves ya vistas para no añadir el mismo Collection dos veces
+        // pero sí añadir valores escalares repetidos (e.g. mismo param en varios WHERE)
+        List<Object> result = new ArrayList<>();
+        java.util.Set<String> expandedKeys = new java.util.HashSet<>();
+        for (String key : indexes) {
+            Object value = parameters.get(key);
+            if (value instanceof Collection<?>) {
+                // Solo expandimos la primera vez que aparece esta clave; las siguientes
+                // repeticiones del mismo nombre ya fueron contadas en getIndexesOfOccurrences
+                if (expandedKeys.add(key)) {
+                    result.addAll((Collection<?>) value);
+                }
+            } else {
+                result.add(value);
+            }
+        }
+        return result;
     }
 
     /**

@@ -145,7 +145,7 @@ public class Selector extends QueryBuilder<Selector> {
      */
     public Selector setPagination(SqlParameter sqlParameter, Pagination pagination) throws InvalidCurrentPageException {
         pagination.calculatePagination(sqlParameter, constants, parameter);
-        sqlParameter.p = pagination;
+        sqlParameter.setPagination(pagination);
         return this;
     }
 
