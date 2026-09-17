@@ -20,8 +20,13 @@ This project can be used in any kind of Java project since it has no runtime dep
 * [5. UPDATE statement](#block5)
 * [6. DELETE statement](#block6)
 * [7. Dialects & pagination](#block7)
-* [8. Authors](#block8)
-* [9. License](#block9)
+* [8. Real-world usage](#block8)
+    * [8.1. Plain JDBC](#block8.1)
+    * [8.2. Pagination with `Template<T>`](#block8.2)
+    * [8.3. Spring `JdbcTemplate`](#block8.3)
+    * [8.4. A reusable dynamic-filter repository](#block8.4)
+* [9. Authors](#block9)
+* [10. License](#block10)
 
 <a name="block1"></a>
 ## 1. Installation [↑](#index_block)
@@ -231,8 +236,158 @@ System.out.println(sp.getSql());
 ```
 
 <a name="block8"></a>
-## 8. Authors [↑](#index_block)
-Derick Felix
+## 8. Real-world usage [↑](#index_block)
+
+Since the builder only produces a SQL string plus an ordered list of parameters,
+it plugs into any data-access layer. These examples show the same builder output
+consumed from plain JDBC, Spring and a small reusable repository.
+
+<a name="block8.1"></a>
+### 8.1. Plain JDBC [↑](#index_block)
+Bind the ordered parameters into a `PreparedStatement` one by one. Because they
+are already in SQL order, a simple index loop is enough.
+```java
+import io.github.str4ng3r.common.Join;
+import io.github.str4ng3r.common.Selector;
+import io.github.str4ng3r.common.SqlParameter;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public List<User> findActiveUsers(Connection connection, String namePart) throws SQLException {
+    SqlParameter query = new Selector()
+            .select("users u", "u.id", "u.name", "u.email")
+            .join(Join.LEFT, "user_address ua", "ua.user_id = u.id")
+            .where("u.active = :active", p -> p.put("active", true))
+            .andWhere("u.name LIKE :name", p -> p.put("name", "%" + namePart + "%"))
+            .orderBy("u.name", false)
+            .getSqlAndParameters();
+
+    List<User> users = new ArrayList<>();
+    try (PreparedStatement ps = connection.prepareStatement(query.getSql())) {
+        List<Object> params = query.getListParameters();
+        for (int i = 0; i < params.size(); i++) {
+            ps.setObject(i + 1, params.get(i));   // JDBC indexes are 1-based
+        }
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                users.add(new User(rs.getInt("id"), rs.getString("name"), rs.getString("email")));
+            }
+        }
+    }
+    return users;
+}
+```
+
+<a name="block8.2"></a>
+### 8.2. Pagination with `Template<T>` [↑](#index_block)
+`getCount(...)` wraps the query in a `SELECT COUNT(*)` so you can compute the
+total, then `setPagination(...)` mutates the `SqlParameter` to add the dialect's
+`LIMIT`/`OFFSET`. `Template<T>` bundles the fetched page together with the
+pagination metadata (page size, total count, current page, total pages).
+```java
+import io.github.str4ng3r.common.*;
+
+public Template<List<User>> findUsersPage(Connection connection, int page, int pageSize) throws Exception {
+    Selector s = new Selector()
+            .select("users u", "u.id", "u.name", "u.email")
+            .setDialect(Constants.SqlDialect.Postgres);
+
+    SqlParameter query = s.getSqlAndParameters();
+
+    // 1) total rows for the same filters
+    int total;
+    try (PreparedStatement ps = connection.prepareStatement(s.getCount(query.getSql()))) {
+        for (int i = 0; i < query.getListParameters().size(); i++)
+            ps.setObject(i + 1, query.getListParameters().get(i));
+        try (ResultSet rs = ps.executeQuery()) {
+            rs.next();
+            total = rs.getInt(1);
+        }
+    }
+
+    // 2) add LIMIT/OFFSET for the requested page
+    s.setPagination(query, new Pagination(pageSize, total, page));
+
+    // 3) fetch the page
+    List<User> users = new ArrayList<>();
+    try (PreparedStatement ps = connection.prepareStatement(query.getSql())) {
+        for (int i = 0; i < query.getListParameters().size(); i++)
+            ps.setObject(i + 1, query.getListParameters().get(i));
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next())
+                users.add(new User(rs.getInt("id"), rs.getString("name"), rs.getString("email")));
+        }
+    }
+
+    // Template<T> carries the data + pagination info (great for JSON responses)
+    return new Template<>(query, users);
+}
+```
+
+<a name="block8.3"></a>
+### 8.3. Spring `JdbcTemplate` [↑](#index_block)
+The ordered parameter list maps directly onto the varargs of `JdbcTemplate`,
+and a `RowMapper` turns each row into your domain object.
+```java
+import io.github.str4ng3r.common.Selector;
+import io.github.str4ng3r.common.SqlParameter;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.Arrays;
+import java.util.List;
+
+public List<User> search(JdbcTemplate jdbc, List<Integer> roleIds) throws Exception {
+    SqlParameter query = new Selector()
+            .select("users u", "u.id", "u.name", "u.email")
+            .where("u.role_id IN (:roles)", p -> p.put("roles", roleIds))  // expands to (?,?,...)
+            .andWhere("u.active = :active", p -> p.put("active", true))
+            .getSqlAndParameters();
+
+    // getListParameters() is already in the right order for the '?' placeholders
+    return jdbc.query(
+            query.getSql(),
+            query.getListParameters().toArray(),
+            (rs, rowNum) -> new User(rs.getInt("id"), rs.getString("name"), rs.getString("email")));
+}
+```
+For an `UPDATE`/`INSERT`/`DELETE` you would call `jdbc.update(query.getSql(), query.getListParameters().toArray())` instead.
+
+<a name="block8.4"></a>
+### 8.4. A reusable dynamic-filter repository [↑](#index_block)
+A common ORM-style use case: build a query whose filters depend on which
+arguments are present. `andWhere(...)` is only added when the value is non-null,
+so the generated SQL stays minimal.
+```java
+import io.github.str4ng3r.common.Selector;
+import io.github.str4ng3r.common.SqlParameter;
+
+public class UserRepository {
+
+    public SqlParameter buildSearch(String name, String email, Boolean active) {
+        Selector s = new Selector().select("users u", "u.id", "u.name", "u.email");
+
+        if (name != null)
+            s.andWhere("u.name LIKE :name", p -> p.put("name", "%" + name + "%"));
+        if (email != null)
+            s.andWhere("u.email = :email", p -> p.put("email", email));
+        if (active != null)
+            s.andWhere("u.active = :active", p -> p.put("active", active));
+
+        return s.orderBy("u.name", false).getSqlAndParameters();
+    }
+}
+
+// buildSearch("ana", null, true) ->
+//   SELECT u.id, u.name, u.email FROM users u
+//   WHERE u.name LIKE ? AND u.active = ? ORDER BY u.name ASC
+//   params: ["%ana%", true]
+```
+The `:name` token is never string-concatenated into the SQL; only the `%ana%`
+value travels as a bound parameter, which keeps the query safe from SQL injection.
+
+
 
  - <derickfelix@zoho.com>
  - [https://github.com/derickfelix](https://github.com/derickfelix)
@@ -242,8 +397,8 @@ Pablo Eduardo Martinez Solis
  - <pablo980629@hotmail.com>
  - [https://github.com/STR4NG3R](https://github.com/STR4NG3R)
 
-<a name="block9"></a>
-## 9. License [↑](#index_block)
+<a name="block10"></a>
+## 10. License [↑](#index_block)
 Java SQL Query Builder is licensed under the GPLv3 license.
 
 ```
