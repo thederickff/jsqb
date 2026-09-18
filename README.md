@@ -4,6 +4,20 @@ SQL Query Builder
 Stop losing time writing repeated SQL queries and let Java SQL Query Builder do the job for you. It's simple, fast and lightweight. **You don't need a database connection to build the query.**
 This project can be used in any kind of Java project since it has no runtime dependencies. It generates parameterized SQL (using `?` placeholders) plus the ordered list of parameters, ready to feed into a `PreparedStatement` or an ORM.
 
+## Features
+
+* **Fluent builders** for `SELECT`, `INSERT`, `UPDATE` and `DELETE`.
+* **Parameterized output**: named tokens (`:name`) bound through lambdas — user input never gets concatenated into the SQL, so it is safe from SQL injection.
+* **Automatic `IN (...)` expansion**: a bound `Collection` becomes one `?` per element.
+* **JOINs**: `INNER`, `LEFT`, `RIGHT` and `CROSS` (no dangling `ON` for cross joins).
+* **Multiple base tables** in `FROM` (comma-separated) for `SELECT` and `DELETE`.
+* **Incremental building**: add fields (`addSelect`), tables (`addFrom`), filters (`andWhere`), order columns (`orderBy` accumulates) and `GROUP BY` / `HAVING`.
+* **`UPDATE` helpers**: ordered `SET` via `LinkedHashMap` and column exclusion with `excludeColumns`.
+* **Dialect-aware pagination** for MySQL, Oracle, PostgreSQL and generic SQL.
+* **Safety guards**: mandatory `WHERE` for `UPDATE`/`DELETE`, column/value symmetry check for `INSERT`, input validation (null/empty), and an immutable parameter list.
+* **Two output shapes**: an ordered list of parameters or a name→value dictionary.
+* **Zero runtime dependencies** and no database connection required to build queries.
+
 <a name="index_block"></a>
 
 * [1. Installation](#block1)
@@ -16,8 +30,12 @@ This project can be used in any kind of Java project since it has no runtime dep
     * [2.5. GROUP BY / HAVING](#block2.5)
     * [2.6. ORDER BY](#block2.6)
 * [3. JOIN statement](#block3)
+    * [3.1. Inner / Left / Right joins](#block3.1)
+    * [3.2. CROSS JOIN](#block3.2)
+    * [3.3. Multiple base tables](#block3.3)
 * [4. INSERT statement](#block4)
 * [5. UPDATE statement](#block5)
+    * [5.1. Excluding columns](#block5.1)
 * [6. DELETE statement](#block6)
 * [7. Dialects & pagination](#block7)
 * [8. Real-world usage](#block8)
@@ -25,8 +43,9 @@ This project can be used in any kind of Java project since it has no runtime dep
     * [8.2. Pagination with `Template<T>`](#block8.2)
     * [8.3. Spring `JdbcTemplate`](#block8.3)
     * [8.4. A reusable dynamic-filter repository](#block8.4)
-* [9. Authors](#block9)
-* [10. License](#block10)
+* [9. API reference & validation](#block9)
+* [10. Authors](#block10)
+* [11. License](#block11)
 
 <a name="block1"></a>
 ## 1. Installation [↑](#index_block)
@@ -154,6 +173,9 @@ SqlParameter r = new Selector()
 
 <a name="block3"></a>
 ## 3. JOIN statement [↑](#index_block)
+
+<a name="block3.1"></a>
+### 3.1. Inner / Left / Right joins [↑](#index_block)
 The `join(...)` method takes a `Join` enum value (`Join.INNER`, `Join.LEFT`, `Join.RIGHT`, `Join.CROSS`), the table to join and the `ON` condition. Its signature is `join(Join join, String table, String on)`.
 ```java
 import io.github.str4ng3r.common.Join;
@@ -167,6 +189,29 @@ SqlParameter r = new Selector()
 // SELECT u.id, u.nombre, r.nombre, d.calle FROM usuarios u
 // INNER JOIN roles r ON r.id = u.rol_id
 // LEFT JOIN direcciones d ON d.usuario_id = u.id
+```
+
+<a name="block3.2"></a>
+### 3.2. CROSS JOIN [↑](#index_block)
+`crossJoin(table)` adds a `CROSS JOIN` with no `ON` clause.
+```java
+SqlParameter r = new Selector()
+        .select("colores c", "c.id", "t.id")
+        .crossJoin("tallas t")
+        .getSqlAndParameters();
+// SELECT c.id, t.id FROM colores c CROSS JOIN tallas t
+```
+
+<a name="block3.3"></a>
+### 3.3. Multiple base tables [↑](#index_block)
+Extra base tables added with `select(...)` varargs or `addFrom(...)` are joined with a comma in the `FROM` (independently from any `JOIN`).
+```java
+SqlParameter r = new Selector()
+        .select("usuarios u", "u.id")
+        .addFrom("roles r")
+        .where("r.id = u.rol_id", p -> {})
+        .getSqlAndParameters();
+// SELECT u.id FROM usuarios u, roles r WHERE r.id = u.rol_id
 ```
 
 <a name="block4"></a>
@@ -202,9 +247,28 @@ SqlParameter r = new Update()
 // parameters: [Carlos, carlos@ejemplo.com, 7]
 ```
 
+<a name="block5.1"></a>
+### 5.1. Excluding columns [↑](#index_block)
+`excludeColumns(...)` removes columns from the generated `SET` (and from the
+parameter list), which is handy when you build the column map generically but
+want to keep some fields untouched.
+```java
+SqlParameter r = new Update()
+        .from("usuarios u")
+        .excludeColumns("u.password")          // never updated
+        .setColumnsValuesToUpdate(cols -> {
+            cols.put("u.nombre",   "Ana");
+            cols.put("u.password", "secreto"); // dropped from SET
+        })
+        .where("u.id = :id", p -> p.put("id", 1))
+        .getSqlAndParameters();
+// UPDATE usuarios u SET u.nombre = ?  WHERE u.id = ?
+// parameters: [Ana, 1]   (u.password and "secreto" are excluded)
+```
+
 <a name="block6"></a>
 ## 6. DELETE statement [↑](#index_block)
-A `WHERE` is mandatory here too. Joins are supported and the primary table is not duplicated in the `FROM`.
+A `WHERE` is mandatory here too. Joins are supported and the primary table is not duplicated in the `FROM`. You may also pass several base tables to `from(...)` (comma-separated, e.g. MySQL multi-table deletes).
 ```java
 import io.github.str4ng3r.common.Delete;
 
@@ -234,6 +298,21 @@ s.setPagination(sp, new Pagination(10, 100, 2));
 System.out.println(sp.getSql());
 // SELECT * FROM usuarios OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY
 ```
+
+`Pagination(pageSize, totalCount, currentPage)` computes the offset/limit and each
+dialect renders them in its own syntax (here with `pageSize = 10`, page `2`, so
+offset `10`):
+
+| Dialect  | Generated clause                                   |
+|----------|----------------------------------------------------|
+| Oracle   | `OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY`           |
+| MySQL    | `LIMIT 10, 10`  (i.e. `LIMIT offset, count`)       |
+| Postgres | `LIMIT 10 OFFSET 10`                               |
+| Sql      | `LIMIT 10 OFFSET 10`                               |
+
+`getCount(sql)` wraps a query in `SELECT COUNT(*) FROM ( ... )` (adding a
+`temp_count` alias for MySQL) so you can obtain the total before paginating.
+A `currentPage` below `1` throws `InvalidCurrentPageException`.
 
 <a name="block8"></a>
 ## 8. Real-world usage [↑](#index_block)
@@ -387,7 +466,60 @@ public class UserRepository {
 The `:name` token is never string-concatenated into the SQL; only the `%ana%`
 value travels as a bound parameter, which keeps the query safe from SQL injection.
 
+<a name="block9"></a>
+## 9. API reference & validation [↑](#index_block)
 
+Quick reference of the public builder API and the guards enforced when building.
+
+**Common to every builder** (`Selector`, `Update`, `Delete`)
+
+| Method | Description |
+|--------|-------------|
+| `where(criteria, lambda)` | First filter; resets any previous `WHERE`. |
+| `andWhere(criteria, lambda)` | Appends a filter with `AND`. |
+| `join(Join, table, on)` | `INNER` / `LEFT` / `RIGHT` join. |
+| `crossJoin(table)` | `CROSS JOIN` (no `ON`). |
+| `addFrom(table)` | Adds another base table (comma-separated `FROM`). |
+| `setDialect(SqlDialect)` | Target dialect for pagination/quoting. |
+| `getSqlAndParameters()` | Returns `SqlParameter` with SQL + ordered params. |
+| `getSqlAndParametersDictionarie()` | Returns `SqlParameter` with a name→value map. |
+
+**`Selector` only:** `select(table, fields...)`, `addSelect(fields...)`,
+`orderBy(col, descending)` (accumulates), `groupBy(cols)`,
+`having(criteria, lambda)`, `andHaving(criteria, lambda)`,
+`getCount(sql)`, `setPagination(sqlParameter, pagination)`.
+
+**`Insert`:** `setTable(t)` / `new Insert(t)`, `setColumns(cols...)`,
+`setValues(vals...)`, `getSql()`.
+
+**`Update`:** `from(tables...)`, `setColumnsValuesToUpdate(lambda)` (ordered
+`LinkedHashMap`), `excludeColumns(cols...)`.
+
+**`Delete`:** `from(tables...)`.
+
+**`SqlParameter` output:** `getSql()`, `getListParameters()` (immutable ordered
+list), `dictionarieParameters()` (name→value map when built with the dictionary
+variant).
+
+### Validation & safety guards
+
+The builder fails fast with a clear exception instead of emitting broken SQL:
+
+| Situation | Result |
+|-----------|--------|
+| `UPDATE` / `DELETE` without `WHERE` | `InvalidSqlGenerationException` |
+| `INSERT` column/value count mismatch, or missing table | `InvalidSqlGenerationException` |
+| No table provided to the query | `InvalidSqlGenerationException` |
+| `null`/empty table, join table or filter criteria | `IllegalArgumentException` |
+| `currentPage < 1` in pagination | `InvalidCurrentPageException` |
+
+Bound values are always emitted as `?` placeholders (never concatenated), a bound
+`Collection` expands to one `?` per element, and `getListParameters()` returns an
+immutable list so the built query cannot be mutated by accident.
+
+<a name="block10"></a>
+## 10. Authors [↑](#index_block)
+Derick Felix
 
  - <derickfelix@zoho.com>
  - [https://github.com/derickfelix](https://github.com/derickfelix)
@@ -397,8 +529,8 @@ Pablo Eduardo Martinez Solis
  - <pablo980629@hotmail.com>
  - [https://github.com/STR4NG3R](https://github.com/STR4NG3R)
 
-<a name="block10"></a>
-## 10. License [↑](#index_block)
+<a name="block11"></a>
+## 11. License [↑](#index_block)
 Java SQL Query Builder is licensed under the GPLv3 license.
 
 ```
