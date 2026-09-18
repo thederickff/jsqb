@@ -52,18 +52,28 @@ public class Pagination {
     if (currentPage < 1)
       throw new InvalidCurrentPageException("The page must be greater than 0");
 
-    int lower = pageSize * (currentPage - 1);
-    int upper = 0;
+    int offset = pageSize * (currentPage - 1);
+    int limit = pageSize;
 
-    if (constants.getSqlDialect().equals(SqlDialect.Oracle.sqlDialect))
-      upper = pageSize;
-    else
-      upper = lower + pageSize;
+    // Cada dialecto ordena sus tokens :low/:upper de forma distinta:
+    //   Oracle:   OFFSET :low ROWS FETCH NEXT :upper ROWS ONLY  -> (offset, limit)
+    //   MySQL:    LIMIT :low, :upper                            -> (offset, limit)
+    //   Postgres: LIMIT :low OFFSET :upper                      -> (limit, offset)
+    //   SQL:      LIMIT :low OFFSET :upper                      -> (limit, offset)
+    String first, second;
+    String dialect = constants.getSqlDialect();
+    if (dialect.equals(SqlDialect.Postgres.sqlDialect) || dialect.equals(SqlDialect.Sql.sqlDialect)) {
+      first = Integer.toString(limit);
+      second = Integer.toString(offset);
+    } else { // Oracle y MySQL
+      first = Integer.toString(offset);
+      second = Integer.toString(limit);
+    }
 
     totalPages = (int) Math.ceil((double) count / pageSize);
     sqlP.setPagination(this);
-    sqlP.setSql(sqlP.getSql() + constants.replaceValues(constants.getAction(Constants.Actions.PAGINATION),
-        Integer.toString(lower), Integer.toString(upper)));
+    sqlP.setSql(sqlP.getSql()
+        + constants.replaceValues(constants.getAction(Constants.Actions.PAGINATION), first, second));
   }
 
   public Integer getPageSize() {
