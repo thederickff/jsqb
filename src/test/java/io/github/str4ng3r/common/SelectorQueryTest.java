@@ -210,9 +210,9 @@ public class SelectorQueryTest {
                 .addSelect("r.nombre", "d.calle")
                 .getSqlAndParameters();
 
-        assertTrue("Debe contener INNER JOIN", r.getSql().contains("INNER JOIN"));
-        assertTrue("Debe contener LEFT JOIN",  r.getSql().contains("LEFT JOIN"));
-        assertTrue("Debe contener r.nombre",   r.getSql().contains("r.nombre"));
+        check("SELECT u.id, u.nombre, r.nombre, d.calle FROM usuarios u"
+                + " INNER JOIN roles r ON r.id = u.rol_id"
+                + " LEFT JOIN direcciones d ON d.usuario_id = u.id", r.getSql());
     }
 
     @Test
@@ -226,6 +226,53 @@ public class SelectorQueryTest {
         check("SELECT u.id, u.nombre FROM usuarios u INNER JOIN roles r ON r.id = u.rol_id WHERE r.nivel = ?",
                 r.getSql());
         assertEquals(1, r.getListParameters().size());
+    }
+
+    @Test
+    public void crossJoinNoGeneraOnColgante() throws InvalidSqlGenerationException {
+        SqlParameter r = new Selector()
+                .select("colores c", "c.id", "t.id")
+                .crossJoin("tallas t")
+                .getSqlAndParameters();
+        check("SELECT c.id, t.id FROM colores c CROSS JOIN tallas t", r.getSql());
+    }
+
+    // =========================================================================
+    // Validación de entrada (#4) e inmutabilidad de parámetros (#5)
+    // =========================================================================
+
+    @Test(expected = IllegalArgumentException.class)
+    public void selectConTablaVaciaLanzaExcepcion() {
+        new Selector().select("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void selectConTablaNullLanzaExcepcion() {
+        new Selector().select(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void joinConTablaVaciaLanzaExcepcion() {
+        new Selector().select("usuarios u").join(Join.INNER, "  ", "1=1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void joinConTipoNullLanzaExcepcion() {
+        new Selector().select("usuarios u").join(null, "roles r", "1=1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whereConCriterioVacioLanzaExcepcion() {
+        new Selector().select("usuarios").where("   ", p -> {});
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void getListParametersEsInmutable() throws InvalidSqlGenerationException {
+        SqlParameter r = new Selector()
+                .select("usuarios")
+                .where("id = :id", p -> p.put("id", 1))
+                .getSqlAndParameters();
+        r.getListParameters().add("intruso");
     }
 
     // =========================================================================
@@ -349,13 +396,13 @@ public class SelectorQueryTest {
                 .orderBy("total_gastado", true)
                 .getSqlAndParameters();
 
-        assertTrue("Debe contener SELECT",    r.getSql().contains("SELECT"));
-        assertTrue("Debe contener INNER JOIN",r.getSql().contains("INNER JOIN"));
-        assertTrue("Debe contener WHERE",     r.getSql().contains("WHERE"));
-        assertTrue("Debe contener GROUP BY",  r.getSql().contains("GROUP BY"));
-        assertTrue("Debe contener HAVING",    r.getSql().contains("HAVING"));
-        assertTrue("Debe contener ORDER BY",  r.getSql().contains("ORDER BY"));
+        check("SELECT p.usuario_id, SUM(p.total) total_gastado FROM pedidos p"
+                + " INNER JOIN usuarios u ON u.id = p.usuario_id"
+                + " WHERE p.fecha > ? GROUP BY p.usuario_id"
+                + " HAVING SUM(p.total) > ? ORDER BY total_gastado DESC", r.getSql());
         assertEquals(2, r.getListParameters().size());
+        assertEquals("2024-01-01", r.getListParameters().get(0));
+        assertEquals(500, r.getListParameters().get(1));
     }
 
     // =========================================================================

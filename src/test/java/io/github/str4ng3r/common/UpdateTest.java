@@ -59,12 +59,21 @@ public class UpdateTest {
                 .where("u.id = :id", params -> params.put("id", 7))
                 .getSqlAndParameters();
 
-        assertTrue("Debe contener SET",          r.getSql().contains("SET"));
-        assertTrue("Debe contener WHERE u.id = ?", r.getSql().contains("WHERE u.id = ?"));
+        check("UPDATE usuarios u SET u.nombre = ?, u.email = ?  WHERE u.id = ?", r.getSql());
         // 2 columnas SET + 1 WHERE
         assertEquals(3, r.getListParameters().size());
+        assertEquals("Carlos",              r.getListParameters().get(0));
+        assertEquals("carlos@ejemplo.com",  r.getListParameters().get(1));
+        assertEquals(7,                     r.getListParameters().get(2));
     }
 
+    /**
+     * Documenta el SQL exacto que hoy genera un UPDATE con JOIN.
+     * LIMITACIÓN CONOCIDA: la cláusula SET se emite ANTES del JOIN. En MySQL la
+     * sintaxis válida es "UPDATE t1 JOIN t2 ON ... SET ...", por lo que este
+     * orden no es ejecutable en MySQL para updates multi-tabla. El test fija el
+     * comportamiento actual para detectar regresiones si se corrige el orden.
+     */
     @Test
     public void updateConJoin() throws InvalidSqlGenerationException {
         SqlParameter r = updateBase()
@@ -72,9 +81,11 @@ public class UpdateTest {
                 .where("d.ciudad = :ciudad", params -> params.put("ciudad", "CDMX"))
                 .getSqlAndParameters();
 
-        assertTrue("Debe contener INNER JOIN", r.getSql().contains("INNER JOIN"));
-        assertTrue("Debe contener WHERE",      r.getSql().contains("WHERE"));
+        check("UPDATE usuarios u SET u.activo = ?  INNER JOIN direcciones d ON d.usuario_id = u.id"
+                + " WHERE d.ciudad = ?", r.getSql());
         assertEquals(2, r.getListParameters().size());
+        assertEquals(false, r.getListParameters().get(0));
+        assertEquals("CDMX", r.getListParameters().get(1));
     }
 
     @Test

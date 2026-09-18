@@ -81,16 +81,15 @@ public class DeleteTest {
 
     @Test
     public void deleteConMultiplesTablas() throws InvalidSqlGenerationException {
-        // from() acepta varargs — múltiples tablas en el DELETE
+        // from() acepta varargs — las tablas base se unen con coma en el FROM
         SqlParameter resultado = new Delete()
                 .from("logs_acceso", "logs_error")
                 .where("created_at < :fecha", p -> p.put("fecha", "2024-01-01"))
                 .getSqlAndParameters();
 
-        assertTrue("El SQL debe contener logs_acceso", resultado.getSql().contains("logs_acceso"));
-        assertTrue("El SQL debe contener logs_error",  resultado.getSql().contains("logs_error"));
-        assertTrue("El SQL debe contener WHERE",       resultado.getSql().contains("WHERE"));
+        verificar("DELETE FROM logs_acceso, logs_error WHERE created_at < ?", resultado.getSql());
         assertEquals(1, resultado.getListParameters().size());
+        assertEquals("2024-01-01", resultado.getListParameters().get(0));
     }
 
     @Test
