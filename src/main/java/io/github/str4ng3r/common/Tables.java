@@ -53,17 +53,28 @@ class Tables {
     }
 
     public void from(String... tableNames) {
-        for (String t : tableNames)
+        if (tableNames == null || tableNames.length == 0)
+            throw new IllegalArgumentException("At least one table name is required");
+        for (String t : tableNames) {
+            if (t == null || t.trim().isEmpty())
+                throw new IllegalArgumentException("Table name must not be null or empty");
             this.tables.add(new Table(t));
+        }
     }
 
     public void addTable(String tableName, String... fields) {
+        if (tableName == null || tableName.trim().isEmpty())
+            throw new IllegalArgumentException("Table name must not be null or empty");
         this.fields.clear();
         this.tables.add(new Table(tableName));
         this.addFields(fields);
     }
 
     public void addJoin(Join join, String name, String on) {
+        if (join == null)
+            throw new IllegalArgumentException("Join type must not be null");
+        if (name == null || name.trim().isEmpty())
+            throw new IllegalArgumentException("Join table name must not be null or empty");
         this.tables.add(new Table(join.joinOpt, name, on));
     }
 
@@ -76,28 +87,42 @@ class Tables {
         if (getTables().isEmpty())
             throw new InvalidSqlGenerationException("Tables array is empty, so it could not generate the query");
 
+        // Las tablas base son las que no provienen de un join (join == null); se
+        // unen con coma en el FROM. Las tablas de join se emiten aparte con su
+        // propia cláusula (INNER/LEFT/... JOIN ... ON ...).
+        List<String> baseTables = new ArrayList<>();
+        for (Table t : tables)
+            if (t.join == null)
+                baseTables.add(t.name);
+
+        if (baseTables.isEmpty())
+            throw new InvalidSqlGenerationException("No base table was provided for the query");
+
+        String baseFrom = String.join(", ", baseTables);
+
         sql.append(this.action.action);
 
         if (this.action == ACTIONSQL.SELECT) {
             if (fields.isEmpty()) sql.append("* ");
             else addSeparator(fields, sql);
             sql.append("FROM ");
-            sql.append(tables.get(0).name);
+            sql.append(baseFrom);
         } else if (this.action == ACTIONSQL.DELETE) {
             sql.append("FROM ");
-            sql.append(tables.get(0).name);
+            sql.append(baseFrom);
         } else if (this.action == ACTIONSQL.UPDATE) {
-            sql.append(tables.get(0).name);
+            sql.append(baseFrom);
             sql.append(" SET ");
             addSeparator(fields, sql);
         }
 
-        for (int i = 1; i < tables.size(); i++) {
-            Table table = tables.get(i);
-            sql.append(table.join)
-                    .append(table.name)
-                    .append(" ON ")
-                    .append(table.on);
+        for (Table table : tables) {
+            if (table.join == null)
+                continue; // ya incluida en el FROM
+            sql.append(table.join).append(table.name);
+            // CROSS JOIN (o cualquier join sin condición) no debe generar 'ON' colgante
+            if (table.on != null && !table.on.trim().isEmpty())
+                sql.append(" ON ").append(table.on);
         }
 
         return sql;

@@ -47,12 +47,16 @@ final class WhereHaving {
   }
 
   public void addCriteria(String criteria, Consumer<HashMap<String, Object>> parameters) {
+    if (criteria == null || criteria.trim().isEmpty())
+      throw new IllegalArgumentException("Filter criteria must not be null or empty");
     removeAllCriterias();
     if (parameters != null) parameters.accept(this.parameter.parameters);
     this.listFilterCriteria.add(criteria);
   }
 
   public void andAddCriteria(String criteria, Consumer<HashMap<String, Object>> parameters) {
+    if (criteria == null || criteria.trim().isEmpty())
+      throw new IllegalArgumentException("Filter criteria must not be null or empty");
     this.listFilterCriteria.add(criteria);
     if (parameters != null) parameters.accept(this.parameter.parameters);
   }

@@ -61,7 +61,9 @@ public class SqlParameter {
   }
 
   public List<Object> getListParameters() {
-    return this.listParamaters;
+    return this.listParamaters == null
+        ? java.util.Collections.emptyList()
+        : java.util.Collections.unmodifiableList(this.listParamaters);
   }
 
   public HashMap<String, Object> dictionarieParameters() {
